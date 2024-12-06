@@ -1,5 +1,7 @@
 package com.controller;
 
+import static jakarta.ws.rs.core.Response.Status.NO_CONTENT;
+
 import com.PersonService;
 import com.model.Person;
 import io.smallrye.mutiny.Uni;
@@ -24,7 +26,7 @@ public class PersonController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<List<Person>> getAllPersons() {
-        throw new UnsupportedOperationException();
+        return personService.getAllPersons();
     }
 
     @GET
@@ -38,18 +40,25 @@ public class PersonController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Person> createPerson(Person person) {
-        throw new UnsupportedOperationException();
+        System.out.println(person);
+        System.out.println(person.registrationDate().toEpochDay());
+        return personService.createPerson(person);
     }
 
     @PUT
     @Path("/{id}")
     public Uni<Response> updatePerson(Long id, Person person) {
-        throw new UnsupportedOperationException();
+        return personService.updatePerson(new Person(id, person.firstName(), person.lastName(), person.age(),
+            person.registrationDate()))
+            .onItem()
+            .transform(item -> Response.ok().status(NO_CONTENT).build());
     }
 
     @DELETE
     @Path("/{id}")
     public Uni<Response> deletePersonById(Long id) {
-        throw new UnsupportedOperationException();
+        return personService.deletePerson(id)
+            .onItem()
+            .transform(item -> Response.ok().status(NO_CONTENT).build());
     }
 }

@@ -7,17 +7,27 @@ package grpc;
 
 service PersonProtoService {
 
-  rpc GetPerson(PersonRequest) returns (PersonResponse){}
+  rpc GetPerson(PersonId) returns (PersonObject) {}
+  rpc GetAllPersons(Empty) returns (PersonList) {}
+  rpc CreatePerson(PersonObject) returns (PersonObject) {}
+  rpc UpdatePerson(PersonObject) returns (Empty) {}
+  rpc DeletePerson(PersonId) returns (Empty) {}
 }
 
-message PersonRequest {
+message PersonId {
   uint64 id = 1;
 }
 
-message PersonResponse {
+message PersonObject {
   uint64 id = 1;
   string firstName = 2;
   string lastName = 3;
   uint32 age = 4;
   uint64 registrationDateInEpochDays = 5;
 }
+
+message PersonList {
+  repeated PersonObject person = 1;
+}
+
+message Empty {}
