@@ -20,7 +20,7 @@ services:
   db-service:
     build: ./db-service
     restart: always
-    ports:
+    expose:
       - "8085:8085"
     depends_on:
       db:
