@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "grpc";
+
+package grpc;
+
+service PersonProtoService {
+
+  rpc GetPerson(PersonRequest) returns (PersonResponse){}
+}
+
+message PersonRequest {
+  uint64 id = 1;
+}
+
+message PersonResponse {
+  uint64 id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  uint32 age = 4;
+  uint64 registrationDateInEpochDays = 5;
+}

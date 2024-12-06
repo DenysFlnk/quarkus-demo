@@ -16,12 +16,17 @@ services:
       timeout: 1s
       retries: 5
     volumes:
-      - ./src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/1.sql
-  app:
-    build: .
+      - ./db-service/src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/1.sql
+  db-service:
+    build: ./db-service
     restart: always
     ports:
-      - "8080:8080"
+      - "8085:8085"
     depends_on:
       db:
         condition: service_healthy
+  api-service:
+    build: ./api-service
+    restart: always
+    ports:
+      - "8080:8080"

@@ -7,7 +7,6 @@ release.properties
 .flattened-pom.xml
 
 # IntelliJ
-.idea
 *.ipr
 *.iml
 *.iws
@@ -18,10 +17,3 @@ release.properties
 .certs/
 
 db-service/README.md
-
-api-service/.mvn
-db-service/.mvn
-api-service/mvnw
-db-service/mvnw
-api-service/mvnw.cmd
-db-service/mvnw.cmd
