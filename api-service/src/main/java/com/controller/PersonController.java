@@ -2,7 +2,7 @@ package com.controller;
 
 import static jakarta.ws.rs.core.Response.Status.NO_CONTENT;
 
-import com.PersonService;
+import com.service.PersonService;
 import com.model.Person;
 import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
@@ -40,16 +40,13 @@ public class PersonController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Person> createPerson(Person person) {
-        System.out.println(person);
-        System.out.println(person.registrationDate().toEpochDay());
         return personService.createPerson(person);
     }
 
     @PUT
     @Path("/{id}")
     public Uni<Response> updatePerson(Long id, Person person) {
-        return personService.updatePerson(new Person(id, person.firstName(), person.lastName(), person.age(),
-            person.registrationDate()))
+        return personService.updatePerson(id, person)
             .onItem()
             .transform(item -> Response.ok().status(NO_CONTENT).build());
     }

@@ -1,4 +1,4 @@
-package com;
+package com.service;
 
 import com.model.Person;
 import grpc.Empty;
@@ -6,6 +6,10 @@ import grpc.PersonId;
 import grpc.PersonObject;
 import grpc.PersonObject.Builder;
 import grpc.PersonProtoService;
+import io.quarkus.cache.CacheInvalidate;
+import io.quarkus.cache.CacheInvalidateAll;
+import io.quarkus.cache.CacheKey;
+import io.quarkus.cache.CacheResult;
 import io.quarkus.grpc.GrpcClient;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -18,12 +22,14 @@ public class PersonService {
     @GrpcClient("person-service")
     PersonProtoService personGrpcService;
 
+    @CacheResult(cacheName = "personCache")
     public Uni<Person> getPerson(long id) {
         return personGrpcService.getPerson(PersonId.newBuilder().setId(id).build())
             .onItem()
             .transform(PersonService::getPerson);
     }
 
+    @CacheResult(cacheName = "personListCache")
     public Uni<List<Person>> getAllPersons() {
         return personGrpcService.getAllPersons(Empty.getDefaultInstance())
             .onItem()
@@ -32,16 +38,23 @@ public class PersonService {
                 .toList());
     }
 
+    @CacheInvalidateAll(cacheName = "personListCache")
     public Uni<Person> createPerson(Person person) {
         return personGrpcService.createPerson(getPersonObject(person))
             .onItem()
             .transform(PersonService::getPerson);
     }
 
-    public Uni<Empty> updatePerson(Person person) {
-        return personGrpcService.updatePerson(getPersonObject(person));
+    @CacheInvalidate(cacheName = "personCache")
+    @CacheInvalidateAll(cacheName = "personListCache")
+    public Uni<Empty> updatePerson(@CacheKey long id, Person person) {
+        Person updatePerson = new Person(id, person.firstName(), person.lastName(), person.age(),
+            person.registrationDate());
+        return personGrpcService.updatePerson(getPersonObject(updatePerson));
     }
 
+    @CacheInvalidate(cacheName = "personCache")
+    @CacheInvalidateAll(cacheName = "personListCache")
     public Uni<Empty> deletePerson(long id) {
         return personGrpcService.deletePerson(PersonId.newBuilder().setId(id).build());
     }
@@ -52,7 +65,6 @@ public class PersonService {
     }
 
     private static PersonObject getPersonObject(Person person) {
-        System.out.println(person.registrationDate().toEpochDay());
         Builder builder = PersonObject.newBuilder()
             .setFirstName(person.firstName())
             .setLastName(person.lastName())
