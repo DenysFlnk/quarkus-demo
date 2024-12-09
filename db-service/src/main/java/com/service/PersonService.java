@@ -1,6 +1,7 @@
 package com.service;
 
 import com.entity.Person;
+import com.util.PersonUtil;
 import grpc.Empty;
 import grpc.PersonId;
 import grpc.PersonList;
@@ -25,7 +26,7 @@ public class PersonService implements PersonProtoService {
             .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getId()))
             .onItem()
             .ifNotNull()
-            .transform(PersonService::getPersonObject);
+            .transform(PersonUtil::getProtoPersonObject);
     }
 
     @Override
@@ -35,7 +36,7 @@ public class PersonService implements PersonProtoService {
             .onItem()
             .transform(persons -> {
                 List<PersonObject> list = persons.stream()
-                    .map(PersonService::getPersonObject)
+                    .map(PersonUtil::getProtoPersonObject)
                     .toList();
                 return PersonList.newBuilder().addAllPerson(list).build();
             });
@@ -44,15 +45,9 @@ public class PersonService implements PersonProtoService {
     @Override
     @WithSession
     public Uni<PersonObject> createPerson(PersonObject request) {
-        Person person = new Person();
-        person.setFirstName(request.getFirstName());
-        person.setLastName(request.getLastName());
-        person.setAge(request.getAge());
-        person.setRegistrationDate(LocalDate.ofEpochDay(request.getRegistrationDateInEpochDays()));
-
-        return Panache.withTransaction(person::<Person>persist)
+        return Panache.withTransaction(PersonUtil.getPerson(request)::<Person>persist)
             .onItem()
-            .transform(PersonService::getPersonObject);
+            .transform(PersonUtil::getProtoPersonObject);
     }
 
     @Override
@@ -64,12 +59,7 @@ public class PersonService implements PersonProtoService {
                 .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getId()))
                 .onItem()
                 .ifNotNull()
-                .invoke(person -> {
-                    person.setFirstName(request.getFirstName());
-                    person.setLastName(request.getLastName());
-                    person.setAge(request.getAge());
-                    person.setRegistrationDate(LocalDate.ofEpochDay(request.getRegistrationDateInEpochDays()));
-                }))
+                .invoke(person -> PersonUtil.updatePerson(person, request)))
             .onItem()
             .transform(person -> Empty.getDefaultInstance());
     }
@@ -80,14 +70,5 @@ public class PersonService implements PersonProtoService {
         return Panache.withTransaction(() -> Person.deleteById(request.getId()))
             .onItem()
             .transform(b -> Empty.getDefaultInstance());
-    }
-
-    private static PersonObject getPersonObject(Person person) {
-        return PersonObject.newBuilder().setId(person.getId())
-            .setFirstName(person.getFirstName())
-            .setLastName(person.getLastName())
-            .setAge(person.getAge())
-            .setRegistrationDateInEpochDays(person.getRegistrationDate().toEpochDay())
-            .build();
     }
 }

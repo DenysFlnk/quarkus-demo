@@ -3,6 +3,8 @@ syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "grpc";
 
+import "google/protobuf/timestamp.proto";
+
 package grpc;
 
 service PersonProtoService {
@@ -23,7 +25,7 @@ message PersonObject {
   string firstName = 2;
   string lastName = 3;
   uint32 age = 4;
-  uint64 registrationDateInEpochDays = 5;
+  google.protobuf.Timestamp registrationDateTimestamp = 5;
 }
 
 message PersonList {

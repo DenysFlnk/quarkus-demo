@@ -30,3 +30,12 @@ services:
     restart: always
     ports:
       - "8080:8080"
+  redis-cache:
+    image: redis:7.4
+    restart: always
+    expose:
+      - "6379:6379"
+    environment:
+      - REDIS_PASSWORD=my-password
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=1
