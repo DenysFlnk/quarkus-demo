@@ -30,7 +30,7 @@ public class PersonService {
     private final PersonMapper mapper = PersonMapper.INSTANCE;
 
     @CacheResult(cacheName = "personCache")
-    public Uni<Person> getPerson(long id) {
+    public Uni<Person> getPerson(String id) {
         return personGrpcService.getPerson(PersonId.newBuilder().setId(id).build())
             .onItem()
             .transform(PersonUtil::getPerson);
@@ -57,7 +57,7 @@ public class PersonService {
     }
 
     @CacheInvalidate(cacheName = "personCache")
-    public Uni<Empty> updatePerson(@CacheKey long id, Person person) {
+    public Uni<Empty> updatePerson(@CacheKey String id, Person person) {
         personListRedisService.invalidateCache(PERSON_LIST_KEY);
         Person updatePerson = new Person(id, person.firstName(), person.lastName(), person.age(),
             person.registrationDate());
@@ -65,7 +65,7 @@ public class PersonService {
     }
 
     @CacheInvalidate(cacheName = "personCache")
-    public Uni<Empty> deletePerson(long id) {
+    public Uni<Empty> deletePerson(String id) {
         personListRedisService.invalidateCache(PERSON_LIST_KEY);
         return personGrpcService.deletePerson(PersonId.newBuilder().setId(id).build());
     }

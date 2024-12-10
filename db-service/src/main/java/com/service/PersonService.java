@@ -11,8 +11,8 @@ import io.quarkus.grpc.GrpcService;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.smallrye.mutiny.Uni;
-import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @GrpcService
 public class PersonService implements PersonProtoService {
@@ -20,7 +20,7 @@ public class PersonService implements PersonProtoService {
     @Override
     @WithSession
     public Uni<PersonObject> getPerson(PersonId request) {
-        return Person.<Person>findById(request.getId())
+        return Person.<Person>findById(UUID.fromString(request.getId()))
             .onItem()
             .ifNull()
             .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getId()))
@@ -53,7 +53,7 @@ public class PersonService implements PersonProtoService {
     @Override
     @WithSession
     public Uni<Empty> updatePerson(PersonObject request) {
-        return Panache.withTransaction(() -> Person.<Person>findById(request.getId())
+        return Panache.withTransaction(() -> Person.<Person>findById(UUID.fromString(request.getId()))
                 .onItem()
                 .ifNull()
                 .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getId()))
@@ -67,7 +67,7 @@ public class PersonService implements PersonProtoService {
     @Override
     @WithSession
     public Uni<Empty> deletePerson(PersonId request) {
-        return Panache.withTransaction(() -> Person.deleteById(request.getId()))
+        return Panache.withTransaction(() -> Person.deleteById(UUID.fromString(request.getId())))
             .onItem()
             .transform(b -> Empty.getDefaultInstance());
     }

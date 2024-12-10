@@ -17,11 +17,11 @@ service PersonProtoService {
 }
 
 message PersonId {
-  uint64 id = 1;
+  string id = 1;
 }
 
 message PersonObject {
-  uint64 id = 1;
+  string id = 1;
   string firstName = 2;
   string lastName = 3;
   uint32 age = 4;

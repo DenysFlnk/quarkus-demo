@@ -5,7 +5,7 @@ info:
   title: quarkus-demo-api
   version: '1.0'
   license:
-    name: 'Free licanse '
+    name: 'Free license '
     url: 'https://github.com/DenysFlnk'
   description: Quarkus api for Person CRUD operations
   contact:
@@ -60,18 +60,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                id:
-                  type: integer
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                age:
-                  type: integer
-                registrationDate:
-                  type: string
+              $ref: '#/components/schemas/Person'
               x-examples:
                 Example 1:
                   id: 2
@@ -156,8 +145,7 @@ components:
       title: Person
       properties:
         id:
-          type: integer
-          format: int64
+          type: string
         firstName:
           type: string
         lastName:

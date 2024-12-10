@@ -11,7 +11,14 @@
         http://www.liquibase.org/xml/ns/pro
         http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-  <include file="db/changelog/changelog-1.0.xml"/>
-  <include file="db/changelog/changelog-1.1.xml"/>
-  <include file="db/changelog/changelog-1.2.xml"/>
+  <changeSet id="3" author="dfilonenko">
+    <addColumn tableName="person">
+      <column name="uuid" type="UUID" defaultValueComputed="gen_random_uuid()" />
+    </addColumn>
+    <dropPrimaryKey tableName="person" />
+    <renameColumn tableName="person" oldColumnName="id" newColumnName="id_old" />
+    <renameColumn tableName="person" oldColumnName="uuid" newColumnName="id" />
+    <addPrimaryKey tableName="person" columnNames="id" />
+    <dropColumn tableName="person" columnName="id_old"/>
+  </changeSet>
 </databaseChangeLog>

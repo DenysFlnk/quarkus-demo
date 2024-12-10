@@ -7,13 +7,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 public class Person extends PanacheEntityBase {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
+    private UUID id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -27,12 +29,16 @@ public class Person extends PanacheEntityBase {
     @Column(name = "registration_date")
     private LocalDate registrationDate;
 
-    public void setId(Long id) {
+    public String getId() {
+        return id.toString();
+    }
+
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public Long getId() {
-        return id;
+    public void setId(String id) {
+        this.id = UUID.fromString(id);
     }
 
     public String getFirstName() {

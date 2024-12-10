@@ -32,7 +32,7 @@ public class PersonController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Person> getPersonById(Long id) {
+    public Uni<Person> getPersonById(String id) {
         return personService.getPerson(id);
     }
 
@@ -45,7 +45,7 @@ public class PersonController {
 
     @PUT
     @Path("/{id}")
-    public Uni<Response> updatePerson(Long id, Person person) {
+    public Uni<Response> updatePerson(String id, Person person) {
         return personService.updatePerson(id, person)
             .onItem()
             .transform(item -> Response.ok().status(NO_CONTENT).build());
@@ -53,7 +53,7 @@ public class PersonController {
 
     @DELETE
     @Path("/{id}")
-    public Uni<Response> deletePersonById(Long id) {
+    public Uni<Response> deletePersonById(String id) {
         return personService.deletePerson(id)
             .onItem()
             .transform(item -> Response.ok().status(NO_CONTENT).build());
