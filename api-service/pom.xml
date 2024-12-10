@@ -76,12 +76,6 @@
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>5.11.3</version>
-      <scope>compile</scope>
-    </dependency>
 
 
     <!--Open API generator-->
@@ -94,11 +88,6 @@
       <groupId>com.squareup.okhttp3</groupId>
       <artifactId>logging-interceptor</artifactId>
       <version>4.12.0</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-      <version>1.3.2</version>
     </dependency>
     <dependency>
       <groupId>io.gsonfire</groupId>
@@ -172,11 +161,23 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <inputSpec>${project.basedir}/src/main/resources/open-api.yaml</inputSpec>
+              <inputSpec>${project.basedir}/open-api.yaml</inputSpec>
               <generatorName>java</generatorName>
               <configOptions>
-                <sourceFolder>src/gen/java/main</sourceFolder>
+                <sourceFolder>src/java/main</sourceFolder>
+                <dateLibrary>java8</dateLibrary>
+                <useJakartaEe>true</useJakartaEe>
+                <useSwaggerAnnotations>false</useSwaggerAnnotations>
+                <interfaceOnly>true</interfaceOnly>
+                <bigDecimalAsString>true</bigDecimalAsString>
+                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                <disallowAdditionalPropertiesIfNotPresent>false</disallowAdditionalPropertiesIfNotPresent>
+                <useTags>true</useTags>
               </configOptions>
+              <auth>false</auth>
+              <generateApiTests>false</generateApiTests>
+              <generateModelTests>false</generateModelTests>
+              <generateModelDocumentation>false</generateModelDocumentation>
             </configuration>
           </execution>
         </executions>

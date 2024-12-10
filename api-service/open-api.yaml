@@ -42,19 +42,19 @@ paths:
                     age: 32
                     registrationDate: '2000-01-01'
         '404':
-          description: Not Found
-      operationId: get-persons-id
+          description: Person Not Found
+      operationId: get-person
       description: Retrieve the information of the person with the matching person ID.
       x-stoplight:
         id: opfbwirl8pooo
     put:
       summary: Update Person Information
-      operationId: patch-persons-id
+      operationId: update-person
       responses:
         '204':
           description: No Content
         '404':
-          description: Not Found
+          description: Person Not Found
       description: Update the information of an existing person.
       requestBody:
         content:
@@ -97,15 +97,15 @@ paths:
         '204':
           description: No Content
         '404':
-          description: Not Found
-      operationId: delete-persons-id
+          description: Person Not Found
+      operationId: delete-person
       x-stoplight:
         id: 0o09i5nf422pw
       description: Delete Person by matching Person id
   /persons:
     post:
       summary: Create New Person
-      operationId: post-person
+      operationId: create-person
       responses:
         '200':
           description: ''
@@ -127,7 +127,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Person'
+              $ref: '#/components/schemas/PersonCreateRequest'
             examples:
               Example 1:
                 value:
@@ -165,5 +165,22 @@ components:
         age:
           type: integer
           format: int32
+        registrationDate:
+          type: string
+    PersonCreateRequest:
+      type: object
+      x-examples:
+        Example 1:
+          firstName: Harry
+          lastName: Potter
+          age: 39
+          registrationDate: '2001-01-01'
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        age:
+          type: integer
         registrationDate:
           type: string
