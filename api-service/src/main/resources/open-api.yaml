@@ -1,0 +1,169 @@
+openapi: 3.1.0
+x-stoplight:
+  id: tfdhnsdxzgjhp
+info:
+  title: quarkus-demo-api
+  version: '1.0'
+  license:
+    name: 'Free licanse '
+    url: 'https://github.com/DenysFlnk'
+  description: Quarkus api for Person CRUD operations
+  contact:
+    name: Denys
+    url: 'https://github.com/DenysFlnk'
+    email: filonenko.denys94@gmail.com
+  summary: Quarkus api for Person CRUD operations
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  '/persons/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: persons id
+    get:
+      summary: Get Person Info by id
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+              examples:
+                Example 1:
+                  value:
+                    id: 2
+                    firstName: Sarah
+                    lastName: Parker
+                    age: 32
+                    registrationDate: '2000-01-01'
+        '404':
+          description: Not Found
+      operationId: get-persons-id
+      description: Retrieve the information of the person with the matching person ID.
+      x-stoplight:
+        id: opfbwirl8pooo
+    put:
+      summary: Update Person Information
+      operationId: patch-persons-id
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+      description: Update the information of an existing person.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                age:
+                  type: integer
+                registrationDate:
+                  type: string
+              x-examples:
+                Example 1:
+                  id: 2
+                  firstName: Sarah
+                  lastName: Parker
+                  age: 32
+                  registrationDate: '2000-01-01'
+            examples:
+              update any field:
+                value:
+                  id: 2
+                  firstName: Sarah
+                  lastName: Parker
+                  age: 32
+                  registrationDate: '2000-01-01'
+        description: Patch user properties to update.
+      x-stoplight:
+        id: p2i0d7nglzivu
+    servers: []
+    delete:
+      summary: Delete Person by id
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Not Found
+      operationId: delete-persons-id
+      x-stoplight:
+        id: 0o09i5nf422pw
+      description: Delete Person by matching Person id
+  /persons:
+    post:
+      summary: Create New Person
+      operationId: post-person
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+              examples:
+                New User Bob Fellow:
+                  value:
+                    id: 4
+                    firstName: Harry
+                    lastName: Potter
+                    age: 39
+                    registrationDate: '2001-01-01'
+        '400':
+          description: Missing Required Information
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Person'
+            examples:
+              Example 1:
+                value:
+                  firstName: Harry
+                  lastName: Potter
+                  age: 39
+                  registrationDate: '2001-01-01'
+        description: ''
+      description: Create a new Person
+      x-stoplight:
+        id: opzgkjick04rm
+    parameters: []
+components:
+  schemas:
+    Person:
+      type: object
+      x-stoplight:
+        id: 251fb742bed21
+      x-examples:
+        Example 1:
+          id: 2
+          firstName: Sarah
+          lastName: Parker
+          age: 32
+          registrationDate: '2000-01-01'
+      title: Person
+      properties:
+        id:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        age:
+          type: integer
+          format: int32
+        registrationDate:
+          type: string
