@@ -15,6 +15,7 @@ info:
   summary: Quarkus api for Person CRUD operations
 servers:
   - url: 'http://localhost:8080'
+    description: Person-api
 paths:
   '/persons/{id}':
     parameters:
@@ -47,6 +48,8 @@ paths:
       description: Retrieve the information of the person with the matching person ID.
       x-stoplight:
         id: opfbwirl8pooo
+      tags:
+        - person-controller
     put:
       summary: Update Person Information
       operationId: update-person
@@ -79,6 +82,8 @@ paths:
         description: Patch user properties to update.
       x-stoplight:
         id: p2i0d7nglzivu
+      tags:
+        - person-controller
     servers: []
     delete:
       summary: Delete Person by id
@@ -91,6 +96,8 @@ paths:
       x-stoplight:
         id: 0o09i5nf422pw
       description: Delete Person by matching Person id
+      tags:
+        - person-controller
   /persons:
     post:
       summary: Create New Person
@@ -128,6 +135,8 @@ paths:
       description: Create a new Person
       x-stoplight:
         id: opzgkjick04rm
+      tags:
+        - person-controller
     parameters: []
 components:
   schemas:
@@ -172,3 +181,5 @@ components:
           type: integer
         registrationDate:
           type: string
+tags:
+  - name: person-controller
