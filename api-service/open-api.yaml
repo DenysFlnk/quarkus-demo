@@ -1,32 +1,34 @@
 openapi: 3.1.0
-x-stoplight:
-  id: tfdhnsdxzgjhp
 info:
-  title: quarkus-demo-api
   version: '1.0'
-  license:
-    name: 'Free license '
-    url: 'https://github.com/DenysFlnk'
+  title: quarkus-demo-api
+  summary: Quarkus api for Person CRUD operations
   description: Quarkus api for Person CRUD operations
   contact:
     name: Denys
     url: 'https://github.com/DenysFlnk'
     email: filonenko.denys94@gmail.com
-  summary: Quarkus api for Person CRUD operations
+  license:
+    url: 'https://github.com/DenysFlnk'
+    name: 'Free license '
 servers:
   - url: 'http://localhost:8080'
     description: Person-api
 paths:
-  '/persons/{id}':
-    parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
-        description: persons id
+  '/quarkus-demo-api/persons/{id}':
     get:
+      tags:
+        - person-controller
       summary: Get Person Info by id
+      description: Retrieve the information of the person with the matching person ID.
+      operationId: get-person
+      parameters:
+        - name: id
+          in: path
+          description: persons id
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: ''
@@ -34,74 +36,70 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Person'
-              examples:
-                Example 1:
-                  value:
-                    id: 2
-                    firstName: Sarah
-                    lastName: Parker
-                    age: 32
-                    registrationDate: '2000-01-01'
         '404':
           description: Person Not Found
-      operationId: get-person
-      description: Retrieve the information of the person with the matching person ID.
-      x-stoplight:
-        id: opfbwirl8pooo
+    put:
       tags:
         - person-controller
-    put:
       summary: Update Person Information
-      operationId: update-person
-      responses:
-        '204':
-          description: No Content
-        '404':
-          description: Person Not Found
       description: Update the information of an existing person.
+      operationId: update-person
+      parameters:
+        - name: id
+          in: path
+          description: persons id
+          required: true
+          schema:
+            type: string
       requestBody:
+        description: Patch user properties to update.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Person'
-              x-examples:
-                Example 1:
-                  id: 2
-                  firstName: Sarah
-                  lastName: Parker
-                  age: 32
-                  registrationDate: '2000-01-01'
-            examples:
-              update any field:
-                value:
-                  id: 2
-                  firstName: Sarah
-                  lastName: Parker
-                  age: 32
-                  registrationDate: '2000-01-01'
-        description: Patch user properties to update.
-      x-stoplight:
-        id: p2i0d7nglzivu
-      tags:
-        - person-controller
-    servers: []
-    delete:
-      summary: Delete Person by id
       responses:
         '204':
           description: No Content
         '404':
           description: Person Not Found
-      operationId: delete-person
-      x-stoplight:
-        id: 0o09i5nf422pw
-      description: Delete Person by matching Person id
+    delete:
       tags:
         - person-controller
-  /persons:
+      summary: Delete Person by id
+      description: Delete Person by matching Person id
+      operationId: delete-person
+      parameters:
+        - name: id
+          in: path
+          description: persons id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+        '404':
+          description: Person Not Found
+  /quarkus-demo-api/persons:
     post:
+      tags:
+        - person-controller
       summary: Create New Person
+      description: Create a new Person
       operationId: create-person
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonCreateRequest'
+            examples:
+              Example 1:
+                value:
+                  firstName: Harry
+                  lastName: Potter
+                  age: 39
+                  registrationDate: '2001-01-01'
       responses:
         '200':
           description: ''
@@ -119,38 +117,33 @@ paths:
                     registrationDate: '2001-01-01'
         '400':
           description: Missing Required Information
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PersonCreateRequest'
-            examples:
-              Example 1:
-                value:
-                  firstName: Harry
-                  lastName: Potter
-                  age: 39
-                  registrationDate: '2001-01-01'
-        description: ''
-      description: Create a new Person
-      x-stoplight:
-        id: opzgkjick04rm
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+    get:
       tags:
         - person-controller
-    parameters: []
+      summary: Get list of Persons
+      description: Get list of Persons
+      operationId: get-all-persons
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+tags:
+  - name: person-controller
 components:
   schemas:
     Person:
       type: object
-      x-stoplight:
-        id: 251fb742bed21
-      x-examples:
-        Example 1:
-          id: 2
-          firstName: Sarah
-          lastName: Parker
-          age: 32
-          registrationDate: '2000-01-01'
       title: Person
       properties:
         id:
@@ -162,16 +155,17 @@ components:
         age:
           type: integer
           format: int32
-        registrationDate:
-          type: string
+        registrationDateTimestamp:
+          type: integer
+          format: int64
+      required:
+        - id
+        - firstName
+        - lastName
+        - age
+        - registrationDateTimestamp
     PersonCreateRequest:
       type: object
-      x-examples:
-        Example 1:
-          firstName: Harry
-          lastName: Potter
-          age: 39
-          registrationDate: '2001-01-01'
       properties:
         firstName:
           type: string
@@ -179,7 +173,11 @@ components:
           type: string
         age:
           type: integer
-        registrationDate:
-          type: string
-tags:
-  - name: person-controller
+        registrationDateTimestamp:
+          type: integer
+          format: int64
+      required:
+        - firstName
+        - lastName
+        - age
+        - registrationDateTimestamp

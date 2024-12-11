@@ -94,6 +94,12 @@
       <artifactId>gson-fire</artifactId>
       <version>1.9.0</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api -->
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>3.1.0</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -162,22 +168,25 @@
             </goals>
             <configuration>
               <inputSpec>${project.basedir}/open-api.yaml</inputSpec>
-              <generatorName>java</generatorName>
+              <generatorName>jaxrs-spec</generatorName>
+              <library>quarkus</library>
               <configOptions>
+                <supportAsync>true</supportAsync>
                 <sourceFolder>src/java/main</sourceFolder>
                 <dateLibrary>java8</dateLibrary>
                 <useJakartaEe>true</useJakartaEe>
                 <useSwaggerAnnotations>false</useSwaggerAnnotations>
                 <interfaceOnly>true</interfaceOnly>
-                <bigDecimalAsString>true</bigDecimalAsString>
-                <hideGenerationTimestamp>true</hideGenerationTimestamp>
                 <disallowAdditionalPropertiesIfNotPresent>false</disallowAdditionalPropertiesIfNotPresent>
                 <useTags>true</useTags>
               </configOptions>
+              <apiPackage>com.person.api</apiPackage>
+              <modelPackage>com.person.model</modelPackage>
               <auth>false</auth>
               <generateApiTests>false</generateApiTests>
               <generateModelTests>false</generateModelTests>
               <generateModelDocumentation>false</generateModelDocumentation>
+              <generateSupportingFiles>false</generateSupportingFiles>
             </configuration>
           </execution>
         </executions>

@@ -1,12 +1,10 @@
 package com.util;
 
 import com.google.protobuf.Timestamp;
-import com.model.Person;
+import com.person.model.Person;
+import com.person.model.PersonCreateRequest;
 import grpc.PersonObject;
 import grpc.PersonObject.Builder;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 
 public class PersonUtil {
 
@@ -15,25 +13,39 @@ public class PersonUtil {
     }
 
     public static Person getPerson(PersonObject personObject) {
-        Instant date = Instant.ofEpochSecond(personObject.getRegistrationDateTimestamp().getSeconds());
-        return new Person(personObject.getId(), personObject.getFirstName(), personObject.getLastName(),
-            personObject.getAge(), LocalDate.ofInstant(date, ZoneId.systemDefault()));
+        Person person = new Person();
+        person.setId(personObject.getId());
+        person.setFirstName(personObject.getFirstName());
+        person.setLastName(personObject.getLastName());
+        person.setAge(personObject.getAge());
+        person.setRegistrationDateTimestamp(personObject.getRegistrationDateTimestamp().getSeconds());
+
+        return person;
+    }
+
+    public static Person getPerson(PersonCreateRequest request) {
+        Person person = new Person();
+        person.setFirstName(request.getFirstName());
+        person.setLastName(request.getLastName());
+        person.setAge(request.getAge());
+        person.setRegistrationDateTimestamp(request.getRegistrationDateTimestamp());
+        return person;
     }
 
     public static PersonObject getPersonObject(Person person) {
         Builder builder = PersonObject.newBuilder()
-            .setFirstName(person.firstName())
-            .setLastName(person.lastName())
-            .setAge(person.age());
+            .setFirstName(person.getFirstName())
+            .setLastName(person.getLastName())
+            .setAge(person.getAge());
 
         Timestamp timestamp = Timestamp.newBuilder()
-            .setSeconds(Instant.from(person.registrationDate().atStartOfDay(ZoneId.systemDefault())).getEpochSecond())
+            .setSeconds(person.getRegistrationDateTimestamp())
             .build();
 
         builder.setRegistrationDateTimestamp(timestamp);
 
-        if (person.id() != null) {
-            builder.setId(person.id());
+        if (person.getId() != null) {
+            builder.setId(person.getId());
         }
 
         return builder.build();
