@@ -26,7 +26,7 @@ public class PersonController implements PersonControllerApi {
 
     @Override
     public CompletionStage<Person> createPerson(PersonCreateRequest personCreateRequest) {
-        return personService.createPerson(PersonUtil.getPerson(personCreateRequest)).subscribeAsCompletionStage();
+        return personService.createPerson(personCreateRequest).subscribeAsCompletionStage();
     }
 
     @Override

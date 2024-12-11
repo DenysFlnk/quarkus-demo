@@ -1,7 +1,8 @@
 package com.service;
 
+import com.mapper.PersonMapper;
 import com.person.model.Person;
-import com.util.PersonUtil;
+import com.person.model.PersonCreateRequest;
 import grpc.Empty;
 import grpc.PersonId;
 import grpc.PersonProtoService;
@@ -18,6 +19,8 @@ import java.util.List;
 @ApplicationScoped
 public class PersonService {
 
+    private static final PersonMapper MAPPER = PersonMapper.INSTANCE;
+
     @GrpcClient("person-service")
     PersonProtoService personGrpcService;
 
@@ -25,31 +28,30 @@ public class PersonService {
     public Uni<Person> getPerson(String id) {
         return personGrpcService.getPerson(PersonId.newBuilder().setId(id).build())
             .onItem()
-            .transform(PersonUtil::getPerson);
+            .transform(MAPPER::toPerson);
     }
 
     @CacheResult(cacheName = "personListCache")
     public Uni<List<Person>> getAllPersons() {
-        System.out.println("Enter getAllPersons");
         return personGrpcService.getAllPersons(Empty.getDefaultInstance())
             .onItem()
             .transform(personList -> personList.getPersonList().stream()
-                .map(PersonUtil::getPerson)
+                .map(MAPPER::toPerson)
                 .toList());
     }
 
     @CacheInvalidateAll(cacheName = "personListCache")
-    public Uni<Person> createPerson(Person person) {
-        return personGrpcService.createPerson(PersonUtil.getPersonObject(person))
+    public Uni<Person> createPerson(PersonCreateRequest person) {
+        return personGrpcService.createPerson(MAPPER.toPersonObject(person))
             .onItem()
-            .transform(PersonUtil::getPerson);
+            .transform(MAPPER::toPerson);
     }
 
     @CacheInvalidate(cacheName = "personCache")
     @CacheInvalidateAll(cacheName = "personListCache")
     public Uni<Void> updatePerson(@CacheKey String id, Person person) {
         person.setId(id);
-        return personGrpcService.updatePerson(PersonUtil.getPersonObject(person))
+        return personGrpcService.updatePerson(MAPPER.toPersonObject(person))
             .onItem()
             .transform(item -> Uni.createFrom().voidItem())
             .replaceWithVoid();
@@ -58,7 +60,7 @@ public class PersonService {
     @CacheInvalidate(cacheName = "personCache")
     @CacheInvalidateAll(cacheName = "personListCache")
     public Uni<Void> deletePerson(String id) {
-        return personGrpcService.deletePerson(PersonId.newBuilder().setId(id).build())
+        return personGrpcService.deletePerson(MAPPER.toPersonId(id))
             .onItem()
             .transform(item -> Uni.createFrom().voidItem())
             .replaceWithVoid();
