@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "hobby";
+
+package hobby;
+
+service HobbyProtoService {
+
+}
+
+message HobbyId {
+  int32 id = 1;
+}
+
+message HobbyObject {
+  int32 id = 1;
+  string name = 2;
+}

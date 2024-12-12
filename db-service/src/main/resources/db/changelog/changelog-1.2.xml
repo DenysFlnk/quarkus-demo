@@ -18,6 +18,18 @@
     <dropPrimaryKey tableName="person" />
     <renameColumn tableName="person" oldColumnName="id" newColumnName="id_old" />
     <renameColumn tableName="person" oldColumnName="uuid" newColumnName="id" />
+    <update tableName="person">
+      <column name="id" value="fd10d255-e3c4-4afc-b87e-154f307de0a7"/>
+      <where>id_old='1'</where>
+    </update>
+    <update tableName="person">
+      <column name="id" value="8aee5698-1dec-4b7b-b0c5-99a7f4f495f2"/>
+      <where>id_old='2'</where>
+    </update>
+    <update tableName="person">
+      <column name="id" value="6f8d7467-3ad5-404b-a358-e3b4965c71bc"/>
+      <where>id_old='3'</where>
+    </update>
     <addPrimaryKey tableName="person" columnNames="id" />
     <dropColumn tableName="person" columnName="id_old"/>
   </changeSet>

@@ -4,7 +4,6 @@ import com.person.api.PersonControllerApi;
 import com.person.model.Person;
 import com.person.model.PersonCreateRequest;
 import com.service.PersonService;
-import com.util.PersonUtil;
 import jakarta.inject.Inject;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
@@ -17,6 +16,11 @@ public class PersonController implements PersonControllerApi {
     @Override
     public CompletionStage<List<Person>> getAllPersons() {
         return personService.getAllPersons().subscribeAsCompletionStage();
+    }
+
+    @Override
+    public CompletionStage<List<Person>> getAllPersonsByHobby(String hobby) {
+        return personService.getPersonsByHobby(hobby).subscribeAsCompletionStage();
     }
 
     @Override

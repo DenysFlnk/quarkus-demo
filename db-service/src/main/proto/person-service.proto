@@ -1,23 +1,23 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-option java_package = "grpc";
+option java_package = "person";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+import "hobby-service.proto";
 
-package grpc;
+package person;
 
 service PersonProtoService {
 
-  rpc GetPerson(PersonId) returns (PersonObject) {}
-  rpc GetAllPersons(Empty) returns (PersonList) {}
+  rpc GetPerson(google.protobuf.StringValue) returns (PersonObject) {}
+  rpc GetAllPersons(google.protobuf.Empty) returns (PersonList) {}
+  rpc GetPersonsByHobby(google.protobuf.StringValue) returns (PersonList) {}
   rpc CreatePerson(PersonObject) returns (PersonObject) {}
-  rpc UpdatePerson(PersonObject) returns (Empty) {}
-  rpc DeletePerson(PersonId) returns (Empty) {}
-}
-
-message PersonId {
-  string id = 1;
+  rpc UpdatePerson(PersonObject) returns (google.protobuf.Empty) {}
+  rpc DeletePerson(google.protobuf.StringValue) returns (google.protobuf.Empty) {}
 }
 
 message PersonObject {
@@ -26,10 +26,9 @@ message PersonObject {
   string lastName = 3;
   uint32 age = 4;
   google.protobuf.Timestamp registrationDateTimestamp = 5;
+  repeated hobby.HobbyObject hobbies = 6;
 }
 
 message PersonList {
   repeated PersonObject person = 1;
 }
-
-message Empty {}

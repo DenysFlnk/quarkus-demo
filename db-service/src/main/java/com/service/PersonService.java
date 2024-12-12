@@ -1,32 +1,33 @@
 package com.service;
 
 import com.entity.Person;
-import com.util.PersonUtil;
-import grpc.Empty;
-import grpc.PersonId;
-import grpc.PersonList;
-import grpc.PersonObject;
-import grpc.PersonProtoService;
+import com.google.protobuf.Empty;
+import com.google.protobuf.StringValue;
+import com.mapper.PersonMapper;
 import io.quarkus.grpc.GrpcService;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.smallrye.mutiny.Uni;
-import java.util.List;
 import java.util.UUID;
+import person.PersonList;
+import person.PersonObject;
+import person.PersonProtoService;
 
 @GrpcService
 public class PersonService implements PersonProtoService {
 
+    private static final PersonMapper PERSON_MAPPER = PersonMapper.INSTANCE;
+
     @Override
     @WithSession
-    public Uni<PersonObject> getPerson(PersonId request) {
-        return Person.<Person>findById(UUID.fromString(request.getId()))
+    public Uni<PersonObject> getPerson(StringValue request) {
+        return Person.<Person>findById(UUID.fromString(request.getValue()))
             .onItem()
             .ifNull()
-            .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getId()))
+            .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getValue()))
             .onItem()
             .ifNotNull()
-            .transform(PersonUtil::getProtoPersonObject);
+            .transform(PERSON_MAPPER::toPersonObject);
     }
 
     @Override
@@ -34,20 +35,23 @@ public class PersonService implements PersonProtoService {
     public Uni<PersonList> getAllPersons(Empty request) {
         return Person.<Person>listAll()
             .onItem()
-            .transform(persons -> {
-                List<PersonObject> list = persons.stream()
-                    .map(PersonUtil::getProtoPersonObject)
-                    .toList();
-                return PersonList.newBuilder().addAllPerson(list).build();
-            });
+            .transform(PERSON_MAPPER::toPersonList);
+    }
+
+    @Override
+    @WithSession
+    public Uni<PersonList> getPersonsByHobby(StringValue request) {
+        return Person.getPersonsByHobby(request.getValue())
+            .onItem()
+            .transform(PERSON_MAPPER::toPersonList);
     }
 
     @Override
     @WithSession
     public Uni<PersonObject> createPerson(PersonObject request) {
-        return Panache.withTransaction(PersonUtil.getPerson(request)::<Person>persist)
+        return Panache.withTransaction(PERSON_MAPPER.toPerson(request)::<Person>persist)
             .onItem()
-            .transform(PersonUtil::getProtoPersonObject);
+            .transform(PERSON_MAPPER::toPersonObject);
     }
 
     @Override
@@ -59,15 +63,15 @@ public class PersonService implements PersonProtoService {
                 .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getId()))
                 .onItem()
                 .ifNotNull()
-                .invoke(person -> PersonUtil.updatePerson(person, request)))
+                .invoke(person -> PERSON_MAPPER.updatePerson(person, request)))
             .onItem()
             .transform(person -> Empty.getDefaultInstance());
     }
 
     @Override
     @WithSession
-    public Uni<Empty> deletePerson(PersonId request) {
-        return Panache.withTransaction(() -> Person.deleteById(UUID.fromString(request.getId())))
+    public Uni<Empty> deletePerson(StringValue request) {
+        return Panache.withTransaction(() -> Person.deleteById(UUID.fromString(request.getValue())))
             .onItem()
             .transform(b -> Empty.getDefaultInstance());
     }

@@ -38,6 +38,9 @@ paths:
                 $ref: '#/components/schemas/Person'
         '404':
           description: Person Not Found
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
     put:
       tags:
         - person-controller
@@ -62,6 +65,9 @@ paths:
           description: No Content
         '404':
           description: Person Not Found
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
     delete:
       tags:
         - person-controller
@@ -80,6 +86,9 @@ paths:
           description: No Content
         '404':
           description: Person Not Found
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
   /quarkus-demo-api/persons:
     post:
       tags:
@@ -138,6 +147,32 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
+  '/quarkus-demo-api/persons/hobby/{hobby}':
+    get:
+      tags:
+        - person-controller
+      summary: Get list of Persons by Hobby
+      description: Get list of Persons by selected Hobby
+      operationId: get-all-persons-by-hobby
+      parameters:
+        - name: hobby
+          in: path
+          description: Persons selected hobby
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
 tags:
   - name: person-controller
 components:
@@ -158,12 +193,26 @@ components:
         registrationDateTimestamp:
           type: integer
           format: int64
+        hobbies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hobby'
       required:
         - id
         - firstName
         - lastName
         - age
         - registrationDateTimestamp
+    Hobby:
+      type: object
+      title: Hobby
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - id
     PersonCreateRequest:
       type: object
       properties:
