@@ -3,10 +3,18 @@ syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "hobby";
 
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+
 package hobby;
 
 service HobbyProtoService {
 
+  rpc GetHobby(google.protobuf.Int32Value) returns (HobbyObject) {}
+  rpc GetAllHobbies(google.protobuf.Empty) returns (HobbyList) {}
+  rpc CreateHobby(google.protobuf.StringValue) returns (HobbyObject) {}
+  rpc UpdateHobby(HobbyObject) returns (google.protobuf.Empty) {}
+  rpc DeleteHobby(google.protobuf.Int32Value) returns (google.protobuf.Empty) {}
 }
 
 message HobbyId {
@@ -16,4 +24,8 @@ message HobbyId {
 message HobbyObject {
   int32 id = 1;
   string name = 2;
+}
+
+message HobbyList {
+  repeated HobbyObject hobbies = 1;
 }

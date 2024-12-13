@@ -110,22 +110,12 @@ paths:
                   age: 39
                   registrationDate: '2001-01-01'
       responses:
-        '200':
-          description: ''
+        '201':
+          description: Created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Person'
-              examples:
-                New User Bob Fellow:
-                  value:
-                    id: 4
-                    firstName: Harry
-                    lastName: Potter
-                    age: 39
-                    registrationDate: '2001-01-01'
-        '400':
-          description: Missing Required Information
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
@@ -173,8 +163,110 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
-tags:
-  - name: person-controller
+  /quarkus-demo-api/hobbies:
+    get:
+      tags:
+        - hobby-controller
+      summary: Get all Hobbies
+      description: Get all Hobbies
+      operationId: get-all-hobbies
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hobby'
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+    post:
+      tags:
+        - hobby-controller
+      summary: Create Hobby
+      description: Create new Hobby
+      operationId: create-hobby
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HobbyCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hobby'
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+  '/quarkus-demo-api/hobbies/{id}':
+    get:
+      tags:
+        - hobby-controller
+      summary: Get Hobby by Id
+      description: Get Hobby by Id
+      operationId: get-hobby
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hobby'
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+    put:
+      tags:
+        - hobby-controller
+      summary: Update Hobby
+      description: Update Hobby
+      operationId: update-hobby
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hobby'
+      responses:
+        '204':
+          description: No Content
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+    delete:
+      tags:
+        - hobby-controller
+      summary: Delete Hobby by Id
+      description: Delete Hobby by Id
+      operationId: delete-hobby
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
 components:
   schemas:
     Person:
@@ -213,6 +305,7 @@ components:
           type: string
       required:
         - id
+        - name
     PersonCreateRequest:
       type: object
       properties:
@@ -230,3 +323,9 @@ components:
         - lastName
         - age
         - registrationDateTimestamp
+    HobbyCreateRequest:
+      type: object
+      title: HobbyCreateRequest
+      properties:
+        name:
+          type: string

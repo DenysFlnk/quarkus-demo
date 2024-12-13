@@ -25,11 +25,10 @@ public interface PersonMapper {
     }
 
     default List<Person> toPersonList(PersonList personList) {
-        List<Person> list = personList.getPersonList()
+        return personList.getPersonList()
             .stream()
             .map(this::toPerson)
             .toList();
-        return list;
     }
 
     @Mapping(target = "hobbies", source = "hobbiesList")
