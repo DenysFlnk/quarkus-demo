@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -36,7 +35,7 @@ public class Person extends PanacheEntityBase {
     @Column(name = "registration_date")
     private LocalDate registrationDate;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "person_hobby",
         joinColumns = @JoinColumn(name = "person_id"),
@@ -94,7 +93,19 @@ public class Person extends PanacheEntityBase {
         this.hobbies = hobbies;
     }
 
-    public static Uni<List<Person>> getPersonsByHobby(String hobby) {
+    public static Uni<Person> findByIdFetchHobbies(UUID id) {
+        return Person.find("SELECT p FROM Person p JOIN FETCH p.hobbies h WHERE p.id=?1", id).firstResult();
+    }
+
+    public static Uni<List<Person>> findAllFetchHobbies() {
+        return Person.list("SELECT p FROM Person p JOIN FETCH p.hobbies h");
+    }
+
+    public static Uni<List<Person>> findByHobby(String hobby) {
         return Person.list("SELECT p FROM Person p JOIN p.hobbies h WHERE h.name = ?1", hobby.toLowerCase());
+    }
+
+    public static Uni<List<Person>> findByHobbyFetchHobbies(String hobby) {
+        return Person.list("SELECT p FROM Person p JOIN FETCH p.hobbies h WHERE h.name = ?1", hobby.toLowerCase());
     }
 }

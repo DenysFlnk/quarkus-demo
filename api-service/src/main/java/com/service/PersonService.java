@@ -30,6 +30,13 @@ public class PersonService {
             .transform(MAPPER::toPerson);
     }
 
+    @CacheResult(cacheName = "personCache")
+    public Uni<Person> getPersonWithHobby(String id) {
+        return personGrpcService.getPersonWithHobby(StringValue.of(id))
+            .onItem()
+            .transform(MAPPER::toPerson);
+    }
+
     @CacheResult(cacheName = "personListCache")
     public Uni<List<Person>> getAllPersons() {
         return personGrpcService.getAllPersons(Empty.getDefaultInstance())
@@ -38,8 +45,22 @@ public class PersonService {
     }
 
     @CacheResult(cacheName = "personListCache")
+    public Uni<List<Person>> getAllPersonsWithHobbies() {
+        return personGrpcService.getAllPersonsWithHobbies(Empty.getDefaultInstance())
+            .onItem()
+            .transform(MAPPER::toPersonList);
+    }
+
+    @CacheResult(cacheName = "personListCache")
     public Uni<List<Person>> getPersonsByHobby(@CacheKey String hobbyName) {
         return personGrpcService.getPersonsByHobby(StringValue.of(hobbyName))
+            .onItem()
+            .transform(MAPPER::toPersonList);
+    }
+
+    @CacheResult(cacheName = "personListCache")
+    public Uni<List<Person>> getPersonsWithHobbiesByHobby(@CacheKey String hobbyName) {
+        return personGrpcService.getPersonsWithHobbiesByHobby(StringValue.of(hobbyName))
             .onItem()
             .transform(MAPPER::toPersonList);
     }

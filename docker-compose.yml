@@ -20,22 +20,36 @@ services:
   db-service:
     build: ./db-service
     restart: always
+    ports:
+      - "8085:8085"
     expose:
       - "8085:8085"
     depends_on:
       db:
         condition: service_healthy
-  api-service:
-    build: ./api-service
-    restart: always
-    ports:
-      - "8080:8080"
+#  api-service:
+#    build: ./api-service
+#    restart: always
+#    ports:
+#      - "8080:8080"
   redis-cache:
     image: redis:7.4
     restart: always
+    ports:
+      - "6380:6379"
     expose:
       - "6379:6379"
     environment:
       - REDIS_PASSWORD=my-password
       - REDIS_PORT=6379
       - REDIS_DATABASES=1
+  keycloak:
+    image: keycloak/keycloak:26.0
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: password
+    ports:
+      - "9080:9080"
+    command:
+      - "start-dev"
+      - "--http-port=9080"

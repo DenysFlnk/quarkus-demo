@@ -13,8 +13,11 @@ package person;
 service PersonProtoService {
 
   rpc GetPerson(google.protobuf.StringValue) returns (PersonObject) {}
+  rpc GetPersonWithHobby(google.protobuf.StringValue) returns (PersonObject) {}
   rpc GetAllPersons(google.protobuf.Empty) returns (PersonList) {}
+  rpc GetAllPersonsWithHobbies(google.protobuf.Empty) returns (PersonList) {}
   rpc GetPersonsByHobby(google.protobuf.StringValue) returns (PersonList) {}
+  rpc GetPersonsWithHobbiesByHobby(google.protobuf.StringValue) returns (PersonList) {}
   rpc CreatePerson(PersonObject) returns (PersonObject) {}
   rpc UpdatePerson(PersonObject) returns (google.protobuf.Empty) {}
   rpc DeletePerson(google.protobuf.StringValue) returns (google.protobuf.Empty) {}

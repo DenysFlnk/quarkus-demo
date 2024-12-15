@@ -4,10 +4,12 @@ import com.person.api.HobbyControllerApi;
 import com.person.model.Hobby;
 import com.person.model.HobbyCreateRequest;
 import com.service.HobbyService;
+import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
+@Authenticated
 public class HobbyController implements HobbyControllerApi {
 
     @Inject

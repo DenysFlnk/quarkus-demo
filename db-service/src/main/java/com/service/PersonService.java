@@ -8,6 +8,7 @@ import io.quarkus.grpc.GrpcService;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.smallrye.mutiny.Uni;
+import java.util.ArrayList;
 import java.util.UUID;
 import person.PersonList;
 import person.PersonObject;
@@ -27,6 +28,20 @@ public class PersonService implements PersonProtoService {
             .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getValue()))
             .onItem()
             .ifNotNull()
+            .invoke(person -> person.setHobbies(new ArrayList<>()))
+            .onItem()
+            .transform(PERSON_MAPPER::toPersonObject);
+    }
+
+    @Override
+    @WithSession
+    public Uni<PersonObject> getPersonWithHobby(StringValue request) {
+        return Person.findByIdFetchHobbies(UUID.fromString(request.getValue()))
+            .onItem()
+            .ifNull()
+            .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getValue()))
+            .onItem()
+            .ifNotNull()
             .transform(PERSON_MAPPER::toPersonObject);
     }
 
@@ -35,13 +50,33 @@ public class PersonService implements PersonProtoService {
     public Uni<PersonList> getAllPersons(Empty request) {
         return Person.<Person>listAll()
             .onItem()
+            .invoke(list -> list.forEach(person -> person.setHobbies(new ArrayList<>())))
+            .onItem()
+            .transform(PERSON_MAPPER::toPersonList);
+    }
+
+    @Override
+    @WithSession
+    public Uni<PersonList> getAllPersonsWithHobbies(Empty request) {
+        return Person.findAllFetchHobbies()
+            .onItem()
             .transform(PERSON_MAPPER::toPersonList);
     }
 
     @Override
     @WithSession
     public Uni<PersonList> getPersonsByHobby(StringValue request) {
-        return Person.getPersonsByHobby(request.getValue())
+        return Person.findByHobby(request.getValue())
+            .onItem()
+            .invoke(list -> list.forEach(person -> person.setHobbies(new ArrayList<>())))
+            .onItem()
+            .transform(PERSON_MAPPER::toPersonList);
+    }
+
+    @Override
+    @WithSession
+    public Uni<PersonList> getPersonsWithHobbiesByHobby(StringValue request) {
+        return Person.findByHobbyFetchHobbies(request.getValue())
             .onItem()
             .transform(PERSON_MAPPER::toPersonList);
     }
