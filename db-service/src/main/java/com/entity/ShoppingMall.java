@@ -1,6 +1,7 @@
 package com.entity;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,7 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import java.util.List;
-import org.locationtech.jts.geom.Point;
+import com.vividsolutions.jts.geom.Point;
 
 @Entity(name = "shopping_mall")
 public class ShoppingMall extends PanacheEntityBase {
@@ -23,10 +24,11 @@ public class ShoppingMall extends PanacheEntityBase {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "location")
+    @Basic
+    @Column(name = "location", columnDefinition = "geography(Point,4326)")
     private Point location;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "shopping_mall_hobby",
         joinColumns = @JoinColumn(name = "shopping_mall_id"),

@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "shopping_mall";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+import "hobby-service.proto";
+
+package shopping_mall;
+
+service ShoppingMallProtoService {
+
+  rpc GetAllMalls(google.protobuf.Empty) returns (ShoppingMallList) {}
+  rpc GetMall(google.protobuf.Int32Value) returns (ShoppingMallObject) {}
+  rpc CreateMall(ShoppingMallObject) returns (ShoppingMallObject) {}
+  rpc UpdateMall(ShoppingMallObject) returns (google.protobuf.Empty) {}
+  rpc DeleteMall(google.protobuf.Int32Value) returns (google.protobuf.Empty) {}
+}
+
+message ShoppingMallObject {
+  int32 id = 1;
+  string name = 2;
+  Location location = 3;
+  repeated hobby.HobbyObject hobbies = 4;
+}
+
+message Location {
+  double lat = 1;
+  double lng = 2;
+}
+
+message ShoppingMallList {
+  repeated ShoppingMallObject malls = 1;
+}

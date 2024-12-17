@@ -15,7 +15,7 @@
     <createTable tableName="shopping_mall">
       <column name="id" type="int" autoIncrement="true" incrementBy="1" startWith="1"/>
       <column name="name" type="varchar"/>
-      <column name="location" type="geometry(Point, 4326)"/>
+      <column name="location" type="geography(Point, 4326)"/>
     </createTable>
     <insert tableName="shopping_mall">
       <column name="name" value="East moll"/>

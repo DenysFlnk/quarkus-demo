@@ -267,6 +267,105 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
+  /quarkus-demo-api/shopping-malls/:
+    get:
+      tags:
+        - shopping-mall-controller
+      summary: Get ShoppingMalls
+      operationId: get-all-shopping-malls
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShoppingMall'
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+    post:
+      tags:
+        - shopping-mall-controller
+      summary: Create ShoppingMall
+      operationId: create-shopping-mall
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShoppingMallCreateRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingMall'
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+  '/quarkus-demo-api/shopping-malls/{id}':
+    get:
+      tags:
+        - shopping-mall-controller
+      summary: Get ShoppingMall by Id
+      operationId: get-shopping-mall
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShoppingMall'
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+    delete:
+      tags:
+        - shopping-mall-controller
+      summary: Delete ShoppingMall
+      operationId: delete-shopping-mall
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+    put:
+      tags:
+        - shopping-mall-controller
+      summary: Update ShoppingMall
+      operationId: update-shopping-mall
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShoppingMall'
+      responses:
+        '204':
+          description: No Content
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
 components:
   schemas:
     Person:
@@ -329,3 +428,46 @@ components:
       properties:
         name:
           type: string
+    ShoppingMall:
+      type: object
+      title: ShoppingMall
+      properties:
+        id:
+          type: integer
+          format: int32
+        name:
+          type: string
+        hobbies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hobby'
+        location:
+          $ref: '#/components/schemas/Location'
+      required:
+        - id
+        - name
+    Location:
+      type: object
+      title: Location
+      properties:
+        lat:
+          type: number
+          format: double
+        lng:
+          type: number
+          format: double
+    ShoppingMallCreateRequest:
+      type: object
+      title: ShoppingMallCreateRequest
+      properties:
+        name:
+          type: string
+        hobbies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hobby'
+        location:
+          $ref: '#/components/schemas/Location'
+      required:
+        - name
+        - location

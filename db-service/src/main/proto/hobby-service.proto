@@ -17,10 +17,6 @@ service HobbyProtoService {
   rpc DeleteHobby(google.protobuf.Int32Value) returns (google.protobuf.Empty) {}
 }
 
-message HobbyId {
-  int32 id = 1;
-}
-
 message HobbyObject {
   int32 id = 1;
   string name = 2;
