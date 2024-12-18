@@ -17,6 +17,10 @@
     <quarkus.platform.version>3.17.2</quarkus.platform.version>
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.5.0</surefire-plugin.version>
+    <hibernate-spatial.version>6.6.3.Final</hibernate-spatial.version>
+    <vividsolutions-jts.version>1.13</vividsolutions-jts.version>
+    <mapstruct.version>1.6.3</mapstruct.version>
+    <mapstruct-processor.version>1.6.3</mapstruct-processor.version>
   </properties>
 
   <dependencyManagement>
@@ -39,12 +43,12 @@
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-spatial</artifactId>
-      <version>6.6.3.Final</version>
+      <version>${hibernate-spatial.version}</version>
     </dependency>
     <dependency>
       <groupId>com.vividsolutions</groupId>
       <artifactId>jts</artifactId>
-      <version>1.13</version>
+      <version>${vividsolutions-jts.version}</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -67,12 +71,12 @@
     <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
-      <version>1.6.3</version>
+      <version>${mapstruct.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct-processor</artifactId>
-      <version>1.6.3</version>
+      <version>${mapstruct-processor.version}</version>
     </dependency>
   </dependencies>
 

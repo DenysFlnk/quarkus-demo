@@ -17,6 +17,9 @@
     <quarkus.platform.version>3.17.3</quarkus.platform.version>
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.5.0</surefire-plugin.version>
+    <jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
+    <mapstruct.version>1.6.3</mapstruct.version>
+    <mapstruct-processor.version>1.6.3</mapstruct-processor.version>
   </properties>
 
   <dependencyManagement>
@@ -57,12 +60,12 @@
     <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
-      <version>1.6.3</version>
+      <version>${mapstruct.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct-processor</artifactId>
-      <version>1.6.3</version>
+      <version>${mapstruct-processor.version}</version>
     </dependency>
 
     <!--Testing-->
@@ -80,7 +83,7 @@
     <dependency>
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
-      <version>3.1.0</version>
+      <version>${jakarta.validation-api.version}</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
