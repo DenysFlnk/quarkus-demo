@@ -15,7 +15,7 @@ import shopping_mall.Location;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
 
-@Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE)
+@Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE, uses = BaseProtoMapper.class)
 public interface ShoppingMallMapper {
 
     ShoppingMallMapper INSTANCE = Mappers.getMapper(ShoppingMallMapper.class);
@@ -28,30 +28,13 @@ public interface ShoppingMallMapper {
             .build();
     }
 
-    @Named("pointToLocation")
-    default Location toLocation(Point point) {
-        return Location.newBuilder()
-            .setLat(point.getX())
-            .setLng(point.getY())
-            .build();
-    }
-
-    @Named("locationToPoint")
-    default Point toPoint(Location location) {
-        GeometryFactory geometryFactory = new GeometryFactory();
-        return geometryFactory.createPoint(new Coordinate(location.getLat(), location.getLng()));
-    }
-
-    @Mapping(target = "location" , source = "location", qualifiedByName = "pointToLocation")
     @Mapping(target = "hobbiesList", source = "hobbies")
     ShoppingMallObject toShoppingMallObject(ShoppingMall mall);
 
-    @Mapping(target = "location" , source = "location", qualifiedByName = "locationToPoint")
     @Mapping(target = "hobbies", source = "hobbiesList")
     @Mapping(target = "id", ignore = true)
     ShoppingMall toShoppingMall(ShoppingMallObject shoppingMallObject);
 
-    @Mapping(target = "location" , source = "location", qualifiedByName = "locationToPoint")
     @Mapping(target = "hobbies", source = "hobbiesList")
     void updateShoppingMall(@MappingTarget ShoppingMall mall, ShoppingMallObject shoppingMallObject);
 }

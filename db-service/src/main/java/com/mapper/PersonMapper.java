@@ -1,10 +1,6 @@
 package com.mapper;
 
 import com.entity.Person;
-import com.google.protobuf.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
@@ -14,20 +10,10 @@ import org.mapstruct.factory.Mappers;
 import person.PersonList;
 import person.PersonObject;
 
-@Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE)
+@Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE, uses = BaseProtoMapper.class)
 public interface PersonMapper {
 
     PersonMapper INSTANCE = Mappers.getMapper(PersonMapper.class);
-
-    default Timestamp map(LocalDate localDate) {
-        Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
-        return Timestamp.newBuilder().setSeconds(instant.getEpochSecond()).build();
-    }
-
-    default LocalDate map(Timestamp timestamp) {
-        Instant date = Instant.ofEpochSecond(timestamp.getSeconds());
-        return LocalDate.ofInstant(date, ZoneId.systemDefault());
-    }
 
     default PersonList toPersonList(List<Person> personList) {
         return PersonList.newBuilder().addAllPerson(personList.stream()
