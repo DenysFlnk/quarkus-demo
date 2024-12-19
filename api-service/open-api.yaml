@@ -366,6 +366,31 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
+    patch:
+      tags:
+        - shopping-mall-controller
+      summary: Update OperationalStatus of ShoppingMall
+      operationId: update-shopping-mall-status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                operationalStatus:
+                  $ref: '#/components/schemas/OperationalStatus'
+      responses:
+        '204':
+          description: No Content
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
 components:
   schemas:
     Person:
@@ -443,9 +468,12 @@ components:
             $ref: '#/components/schemas/Hobby'
         location:
           $ref: '#/components/schemas/Location'
+        operationalStatus:
+          $ref: '#/components/schemas/OperationalStatus'
       required:
         - id
         - name
+        - location
     Location:
       type: object
       title: Location
@@ -456,6 +484,14 @@ components:
         lng:
           type: number
           format: double
+    OperationalStatus:
+      type: string
+      enum:
+        - OPEN
+        - CLOSED
+        - UNDER_CONSTRUCTION
+        - RENOVATION
+      title: OperationalStatus
     ShoppingMallCreateRequest:
       type: object
       title: ShoppingMallCreateRequest
@@ -468,6 +504,8 @@ components:
             $ref: '#/components/schemas/Hobby'
         location:
           $ref: '#/components/schemas/Location'
+        operationalStatus:
+          $ref: '#/components/schemas/OperationalStatus'
       required:
         - name
         - location

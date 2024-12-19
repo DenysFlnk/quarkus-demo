@@ -1,8 +1,8 @@
 package com.controller;
 
-import com.person.api.PersonControllerApi;
-import com.person.model.Person;
-import com.person.model.PersonCreateRequest;
+import com.quarkus.api.PersonControllerApi;
+import com.quarkus.model.Person;
+import com.quarkus.model.PersonCreateRequest;
 import com.security.Role;
 import com.service.PersonService;
 import io.quarkus.security.Authenticated;

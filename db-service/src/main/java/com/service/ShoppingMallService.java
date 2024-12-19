@@ -11,6 +11,7 @@ import io.smallrye.mutiny.Uni;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
 import shopping_mall.ShoppingMallProtoService;
+import shopping_mall.UpdateStatusRequest;
 
 @GrpcService
 public class ShoppingMallService implements ShoppingMallProtoService {
@@ -48,6 +49,16 @@ public class ShoppingMallService implements ShoppingMallProtoService {
             .ifNull()
             .failWith(() -> new IllegalArgumentException("Invalid mall id: " + request.getId()))
             .invoke(mall -> MALL_MAPPER.updateShoppingMall(mall, request)))
+            .replaceWith(Empty.getDefaultInstance());
+    }
+
+    @Override
+    public Uni<Empty> updateMallStatus(UpdateStatusRequest request) {
+        return Panache.withTransaction(() -> ShoppingMall.<ShoppingMall>findById(request.getMallId())
+            .onItem()
+            .ifNull()
+            .failWith(() -> new IllegalArgumentException("Invalid mall id: " + request.getMallId()))
+            .invoke(mall -> mall.setOperationalStatus(MALL_MAPPER.toOperationalStatus(request))))
             .replaceWith(Empty.getDefaultInstance());
     }
 

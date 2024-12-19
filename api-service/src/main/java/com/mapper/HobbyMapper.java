@@ -1,6 +1,6 @@
 package com.mapper;
 
-import com.person.model.Hobby;
+import com.quarkus.model.Hobby;
 import hobby.HobbyList;
 import hobby.HobbyObject;
 import java.util.List;

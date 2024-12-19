@@ -3,8 +3,9 @@ package com.service;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Int32Value;
 import com.mapper.ShoppingMallMapper;
-import com.person.model.ShoppingMall;
-import com.person.model.ShoppingMallCreateRequest;
+import com.quarkus.model.ShoppingMall;
+import com.quarkus.model.ShoppingMallCreateRequest;
+import com.quarkus.model.UpdateShoppingMallStatusRequest;
 import io.quarkus.cache.CacheInvalidate;
 import io.quarkus.cache.CacheInvalidateAll;
 import io.quarkus.cache.CacheKey;
@@ -44,6 +45,13 @@ public class ShoppingMallService {
     public Uni<Void> updateShoppingMall(@CacheKey Integer id, ShoppingMall shoppingMall) {
         shoppingMall.setId(id);
         return shoppingMallProtoService.updateMall(MALL_MAPPER.toShoppingMallObject(shoppingMall))
+            .replaceWithVoid();
+    }
+
+    @CacheInvalidate(cacheName = "shoppingMallCache")
+    @CacheInvalidateAll(cacheName = "shoppingMallListCache")
+    public Uni<Void> updateShoppingMallStatus(@CacheKey Integer id, UpdateShoppingMallStatusRequest request) {
+        return shoppingMallProtoService.updateMallStatus(MALL_MAPPER.toUpdateStatusRequest(id, request))
             .replaceWithVoid();
     }
 

@@ -189,8 +189,8 @@
                 <disallowAdditionalPropertiesIfNotPresent>false</disallowAdditionalPropertiesIfNotPresent>
                 <useTags>true</useTags>
               </configOptions>
-              <apiPackage>com.person.api</apiPackage>
-              <modelPackage>com.person.model</modelPackage>
+              <apiPackage>com.quarkus.api</apiPackage>
+              <modelPackage>com.quarkus.model</modelPackage>
               <auth>false</auth>
               <generateApiTests>false</generateApiTests>
               <generateModelTests>false</generateModelTests>

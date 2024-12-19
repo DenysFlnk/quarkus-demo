@@ -15,6 +15,7 @@ service ShoppingMallProtoService {
   rpc GetMall(google.protobuf.Int32Value) returns (ShoppingMallObject) {}
   rpc CreateMall(ShoppingMallObject) returns (ShoppingMallObject) {}
   rpc UpdateMall(ShoppingMallObject) returns (google.protobuf.Empty) {}
+  rpc UpdateMallStatus(UpdateStatusRequest) returns (google.protobuf.Empty) {}
   rpc DeleteMall(google.protobuf.Int32Value) returns (google.protobuf.Empty) {}
 }
 
@@ -23,6 +24,7 @@ message ShoppingMallObject {
   string name = 2;
   Location location = 3;
   repeated hobby.HobbyObject hobbies = 4;
+  OperationalStatus status = 5;
 }
 
 message Location {
@@ -30,6 +32,18 @@ message Location {
   double lng = 2;
 }
 
+enum OperationalStatus {
+  OPEN = 0;
+  CLOSED = 1;
+  UNDER_CONSTRUCTION = 2;
+  RENOVATION = 3;
+}
+
 message ShoppingMallList {
   repeated ShoppingMallObject malls = 1;
+}
+
+message UpdateStatusRequest {
+  int32 mall_id = 1;
+  OperationalStatus status = 2;
 }

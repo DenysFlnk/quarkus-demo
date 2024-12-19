@@ -1,8 +1,8 @@
 package com.controller;
 
-import com.person.api.HobbyControllerApi;
-import com.person.model.Hobby;
-import com.person.model.HobbyCreateRequest;
+import com.quarkus.api.HobbyControllerApi;
+import com.quarkus.model.Hobby;
+import com.quarkus.model.HobbyCreateRequest;
 import com.service.HobbyService;
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;

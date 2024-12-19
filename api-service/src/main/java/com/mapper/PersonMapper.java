@@ -1,8 +1,8 @@
 package com.mapper;
 
 import com.google.protobuf.Timestamp;
-import com.person.model.Person;
-import com.person.model.PersonCreateRequest;
+import com.quarkus.model.Person;
+import com.quarkus.model.PersonCreateRequest;
 import java.util.List;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
