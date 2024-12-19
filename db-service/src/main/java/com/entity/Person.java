@@ -11,16 +11,25 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
+@Table(name = "person")
 @Entity
+@Getter
+@Setter
 public class Person extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     private UUID id;
 
     @Column(name = "first_name")
@@ -51,46 +60,6 @@ public class Person extends PanacheEntityBase {
         if (id != null && !id.isBlank()) {
             this.id = UUID.fromString(id);
         }
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public LocalDate getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(LocalDate registrationDate) {
-        this.registrationDate = registrationDate;
-    }
-
-    public List<Hobby> getHobbies() {
-        return hobbies;
-    }
-
-    public void setHobbies(List<Hobby> hobbies) {
-        this.hobbies = hobbies;
     }
 
     public static Uni<Person> findByIdFetchHobbies(UUID id) {

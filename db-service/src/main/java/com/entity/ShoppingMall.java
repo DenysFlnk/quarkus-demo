@@ -11,10 +11,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import java.util.List;
 import com.vividsolutions.jts.geom.Point;
+import lombok.Getter;
+import lombok.Setter;
 
-@Entity(name = "shopping_mall")
+@Table(name = "shopping_mall")
+@Entity
+@Getter
+@Setter
 public class ShoppingMall extends PanacheEntityBase {
 
     @Id
@@ -35,36 +41,4 @@ public class ShoppingMall extends PanacheEntityBase {
         inverseJoinColumns = @JoinColumn(name = "hobby_id")
     )
     private List<Hobby> hobbies;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Point getLocation() {
-        return location;
-    }
-
-    public void setLocation(Point location) {
-        this.location = location;
-    }
-
-    public List<Hobby> getHobbies() {
-        return hobbies;
-    }
-
-    public void setHobbies(List<Hobby> hobbies) {
-        this.hobbies = hobbies;
-    }
 }
