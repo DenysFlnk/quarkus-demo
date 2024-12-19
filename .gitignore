@@ -19,3 +19,7 @@ api-service/.idea/
 .certs/
 
 db-service/README.md
+
+# Local environment
+api-service/*.env
+db-service/*.env

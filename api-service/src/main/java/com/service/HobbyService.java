@@ -15,37 +15,35 @@ import io.quarkus.grpc.GrpcClient;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 
 @ApplicationScoped
-@RequiredArgsConstructor
 public class HobbyService {
 
-    private final HobbyMapper hobbyMapper;
+    private static final HobbyMapper HOBBY_MAPPER = HobbyMapper.INSTANCE;
 
     @GrpcClient("hobby-service")
     HobbyProtoService hobbyProtoService;
 
     @CacheResult(cacheName = "hobbyCache")
     public Uni<Hobby> getHobby(Integer id) {
-        return hobbyProtoService.getHobby(Int32Value.of(id)).map(hobbyMapper::toHobby);
+        return hobbyProtoService.getHobby(Int32Value.of(id)).map(HOBBY_MAPPER::toHobby);
     }
 
     @CacheResult(cacheName = "hobbyListCache")
     public Uni<List<Hobby>> getAllHobbies() {
-        return hobbyProtoService.getAllHobbies(Empty.getDefaultInstance()).map(hobbyMapper::toHobbyList);
+        return hobbyProtoService.getAllHobbies(Empty.getDefaultInstance()).map(HOBBY_MAPPER::toHobbyList);
     }
 
     @CacheInvalidate(cacheName = "hobbyCache")
     @CacheInvalidateAll(cacheName = "hobbyListCache")
     public Uni<Void> updateHobby(@CacheKey Integer id, Hobby hobby) {
         hobby.setId(id);
-        return hobbyProtoService.updateHobby(hobbyMapper.toHobbyObject(hobby)).replaceWithVoid();
+        return hobbyProtoService.updateHobby(HOBBY_MAPPER.toHobbyObject(hobby)).replaceWithVoid();
     }
 
     @CacheInvalidateAll(cacheName = "hobbyListCache")
     public Uni<Hobby> createHobby(HobbyCreateRequest createRequest) {
-        return hobbyProtoService.createHobby(StringValue.of(createRequest.getName())).map(hobbyMapper::toHobby);
+        return hobbyProtoService.createHobby(StringValue.of(createRequest.getName())).map(HOBBY_MAPPER::toHobby);
     }
 
     @CacheInvalidate(cacheName = "hobbyCache")

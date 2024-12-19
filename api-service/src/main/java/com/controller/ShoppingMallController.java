@@ -4,10 +4,12 @@ import com.person.api.ShoppingMallControllerApi;
 import com.person.model.ShoppingMall;
 import com.person.model.ShoppingMallCreateRequest;
 import com.service.ShoppingMallService;
+import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
+@Authenticated
 public class ShoppingMallController implements ShoppingMallControllerApi {
 
     @Inject

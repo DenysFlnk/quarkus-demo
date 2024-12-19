@@ -8,21 +8,19 @@ import io.quarkus.grpc.GrpcService;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.smallrye.mutiny.Uni;
-import lombok.RequiredArgsConstructor;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
 import shopping_mall.ShoppingMallProtoService;
 
 @GrpcService
-@RequiredArgsConstructor
 public class ShoppingMallService implements ShoppingMallProtoService {
 
-    private final ShoppingMallMapper mallMapper;
+    private static final ShoppingMallMapper MALL_MAPPER = ShoppingMallMapper.INSTANCE;
 
     @Override
     @WithSession
     public Uni<ShoppingMallList> getAllMalls(Empty request) {
-        return ShoppingMall.<ShoppingMall>listAll().map(mallMapper::toShoppingMallList);
+        return ShoppingMall.<ShoppingMall>listAll().map(MALL_MAPPER::toShoppingMallList);
     }
 
     @Override
@@ -32,14 +30,14 @@ public class ShoppingMallService implements ShoppingMallProtoService {
             .onItem()
             .ifNull()
             .failWith(() -> new IllegalArgumentException("Invalid mall id: " + request.getValue()))
-            .map(mallMapper::toShoppingMallObject);
+            .map(MALL_MAPPER::toShoppingMallObject);
     }
 
     @Override
     @WithSession
     public Uni<ShoppingMallObject> createMall(ShoppingMallObject request) {
-        return Panache.withTransaction(mallMapper.toShoppingMall(request)::<ShoppingMall>persist)
-            .map(mallMapper::toShoppingMallObject);
+        return Panache.withTransaction(MALL_MAPPER.toShoppingMall(request)::<ShoppingMall>persist)
+            .map(MALL_MAPPER::toShoppingMallObject);
     }
 
     @Override
@@ -49,7 +47,7 @@ public class ShoppingMallService implements ShoppingMallProtoService {
             .onItem()
             .ifNull()
             .failWith(() -> new IllegalArgumentException("Invalid mall id: " + request.getId()))
-            .invoke(mall -> mallMapper.updateShoppingMall(mall, request)))
+            .invoke(mall -> MALL_MAPPER.updateShoppingMall(mall, request)))
             .replaceWith(Empty.getDefaultInstance());
     }
 

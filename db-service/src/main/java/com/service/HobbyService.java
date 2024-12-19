@@ -12,13 +12,11 @@ import io.quarkus.grpc.GrpcService;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.smallrye.mutiny.Uni;
-import lombok.RequiredArgsConstructor;
 
 @GrpcService
-@RequiredArgsConstructor
 public class HobbyService implements HobbyProtoService {
 
-    private final HobbyMapper hobbyMapper;
+    private static final HobbyMapper HOBBY_MAPPER = HobbyMapper.INSTANCE;
 
     @Override
     @WithSession
@@ -27,19 +25,19 @@ public class HobbyService implements HobbyProtoService {
             .onItem()
             .ifNull()
             .failWith(() -> new IllegalArgumentException("Invalid hobby id: " + request.getValue()))
-            .map(hobbyMapper::toHobbyObject);
+            .map(HOBBY_MAPPER::toHobbyObject);
     }
 
     @Override
     @WithSession
     public Uni<HobbyList> getAllHobbies(Empty request) {
-        return Hobby.<Hobby>listAll().map(hobbyMapper::toHobbyList);
+        return Hobby.<Hobby>listAll().map(HOBBY_MAPPER::toHobbyList);
     }
 
     @Override
     @WithSession
     public Uni<HobbyObject> createHobby(StringValue request) {
-        return Panache.withTransaction(hobbyMapper.toHobby(request)::<Hobby>persist).map(hobbyMapper::toHobbyObject);
+        return Panache.withTransaction(HOBBY_MAPPER.toHobby(request)::<Hobby>persist).map(HOBBY_MAPPER::toHobbyObject);
     }
 
     @Override
@@ -49,7 +47,7 @@ public class HobbyService implements HobbyProtoService {
                 .onItem()
                 .ifNull()
                 .failWith(() -> new IllegalArgumentException("Invalid hobby id: " + request.getId()))
-                .invoke(hobby -> hobbyMapper.updateHobby(hobby, request)))
+                .invoke(hobby -> HOBBY_MAPPER.updateHobby(hobby, request)))
             .replaceWith(Empty.getDefaultInstance());
     }
 
