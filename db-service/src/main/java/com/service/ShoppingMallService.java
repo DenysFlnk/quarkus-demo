@@ -8,22 +8,21 @@ import io.quarkus.grpc.GrpcService;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.smallrye.mutiny.Uni;
-import java.util.ArrayList;
+import lombok.RequiredArgsConstructor;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
 import shopping_mall.ShoppingMallProtoService;
 
 @GrpcService
+@RequiredArgsConstructor
 public class ShoppingMallService implements ShoppingMallProtoService {
 
-    private final ShoppingMallMapper MALL_MAPPER = ShoppingMallMapper.INSTANCE;
+    private final ShoppingMallMapper mallMapper;
 
     @Override
     @WithSession
     public Uni<ShoppingMallList> getAllMalls(Empty request) {
-        return ShoppingMall.<ShoppingMall>listAll()
-            .onItem()
-            .transform(MALL_MAPPER::toShoppingMallList);
+        return ShoppingMall.<ShoppingMall>listAll().map(mallMapper::toShoppingMallList);
     }
 
     @Override
@@ -33,20 +32,14 @@ public class ShoppingMallService implements ShoppingMallProtoService {
             .onItem()
             .ifNull()
             .failWith(() -> new IllegalArgumentException("Invalid mall id: " + request.getValue()))
-            .onItem()
-            .ifNotNull()
-            .transform(MALL_MAPPER::toShoppingMallObject);
+            .map(mallMapper::toShoppingMallObject);
     }
 
     @Override
     @WithSession
     public Uni<ShoppingMallObject> createMall(ShoppingMallObject request) {
-        System.out.println(request.toString());
-        ShoppingMall shoppingMall = MALL_MAPPER.toShoppingMall(request);
-        System.out.println("Shopping mall id: " + shoppingMall.getId());
-        return Panache.withTransaction(shoppingMall::<ShoppingMall>persist)
-            .onItem()
-            .transform(MALL_MAPPER::toShoppingMallObject);
+        return Panache.withTransaction(mallMapper.toShoppingMall(request)::<ShoppingMall>persist)
+            .map(mallMapper::toShoppingMallObject);
     }
 
     @Override
@@ -56,18 +49,14 @@ public class ShoppingMallService implements ShoppingMallProtoService {
             .onItem()
             .ifNull()
             .failWith(() -> new IllegalArgumentException("Invalid mall id: " + request.getId()))
-            .onItem()
-            .ifNotNull()
-            .invoke(mall -> MALL_MAPPER.updateShoppingMall(mall, request)))
-            .onItem()
-            .transform(mall -> Empty.getDefaultInstance());
+            .invoke(mall -> mallMapper.updateShoppingMall(mall, request)))
+            .replaceWith(Empty.getDefaultInstance());
     }
 
     @Override
     @WithSession
     public Uni<Empty> deleteMall(Int32Value request) {
         return Panache.withTransaction(() -> ShoppingMall.deleteById(request.getValue()))
-            .onItem()
-            .transform(b -> Empty.getDefaultInstance());
+            .replaceWith(Empty.getDefaultInstance());
     }
 }

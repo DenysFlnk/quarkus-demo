@@ -12,11 +12,13 @@ import io.quarkus.grpc.GrpcService;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.smallrye.mutiny.Uni;
+import lombok.RequiredArgsConstructor;
 
 @GrpcService
+@RequiredArgsConstructor
 public class HobbyService implements HobbyProtoService {
 
-    private static final HobbyMapper HOBBY_MAPPER = HobbyMapper.INSTANCE;
+    private final HobbyMapper hobbyMapper;
 
     @Override
     @WithSession
@@ -25,25 +27,19 @@ public class HobbyService implements HobbyProtoService {
             .onItem()
             .ifNull()
             .failWith(() -> new IllegalArgumentException("Invalid hobby id: " + request.getValue()))
-            .onItem()
-            .ifNotNull()
-            .transform(HOBBY_MAPPER::toHobbyObject);
+            .map(hobbyMapper::toHobbyObject);
     }
 
     @Override
     @WithSession
     public Uni<HobbyList> getAllHobbies(Empty request) {
-        return Hobby.<Hobby>listAll()
-            .onItem()
-            .transform(HOBBY_MAPPER::toHobbyList);
+        return Hobby.<Hobby>listAll().map(hobbyMapper::toHobbyList);
     }
 
     @Override
     @WithSession
     public Uni<HobbyObject> createHobby(StringValue request) {
-        return Panache.withTransaction(HOBBY_MAPPER.toHobby(request)::<Hobby>persist)
-            .onItem()
-            .transform(HOBBY_MAPPER::toHobbyObject);
+        return Panache.withTransaction(hobbyMapper.toHobby(request)::<Hobby>persist).map(hobbyMapper::toHobbyObject);
     }
 
     @Override
@@ -53,18 +49,14 @@ public class HobbyService implements HobbyProtoService {
                 .onItem()
                 .ifNull()
                 .failWith(() -> new IllegalArgumentException("Invalid hobby id: " + request.getId()))
-                .onItem()
-                .ifNotNull()
-                .invoke(hobby -> HOBBY_MAPPER.updateHobby(hobby, request)))
-            .onItem()
-            .transform(item -> Empty.getDefaultInstance());
+                .invoke(hobby -> hobbyMapper.updateHobby(hobby, request)))
+            .replaceWith(Empty.getDefaultInstance());
     }
 
     @Override
     @WithSession
     public Uni<Empty> deleteHobby(Int32Value request) {
         return Panache.withTransaction(() -> Hobby.deleteById(request.getValue()))
-            .onItem()
-            .transform(b -> Empty.getDefaultInstance());
+            .replaceWith(Empty.getDefaultInstance());
     }
 }
