@@ -10,7 +10,7 @@ import jakarta.inject.Inject;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
-@Authenticated
+//@Authenticated
 public class ShoppingMallController implements ShoppingMallControllerApi {
 
     @Inject

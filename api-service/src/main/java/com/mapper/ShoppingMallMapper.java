@@ -18,6 +18,8 @@ public interface ShoppingMallMapper {
 
     ShoppingMallMapper INSTANCE = Mappers.getMapper(ShoppingMallMapper.class);
 
+    String OPERATIONAL_STATUS = "OPERATIONAL_STATUS_";
+
     default List<ShoppingMall> toShoppingMallList(ShoppingMallList shoppingMallList) {
         return shoppingMallList.getMallsList().stream()
             .map(INSTANCE::toShoppingMall)
@@ -32,11 +34,11 @@ public interface ShoppingMallMapper {
     }
 
     default com.quarkus.model.OperationalStatus toOperationalStatus(OperationalStatus operationalStatus) {
-        return com.quarkus.model.OperationalStatus.valueOf(operationalStatus.name());
+        return com.quarkus.model.OperationalStatus.valueOf(operationalStatus.name().replaceAll(OPERATIONAL_STATUS, ""));
     }
 
     default OperationalStatus toOperationalStatus(com.quarkus.model.OperationalStatus operationalStatus) {
-        return OperationalStatus.valueOf(operationalStatus.name());
+        return OperationalStatus.valueOf(OPERATIONAL_STATUS + operationalStatus.name());
     }
 
     @Mapping(target = "location", source = "location")

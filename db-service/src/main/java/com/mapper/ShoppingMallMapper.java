@@ -17,6 +17,8 @@ public interface ShoppingMallMapper {
 
     ShoppingMallMapper INSTANCE = Mappers.getMapper(ShoppingMallMapper.class);
 
+    String OPERATIONAL_STATUS = "OPERATIONAL_STATUS_";
+
     default ShoppingMallList toShoppingMallList(List<ShoppingMall> malls) {
         return ShoppingMallList.newBuilder()
             .addAllMalls(malls.stream()
@@ -26,15 +28,15 @@ public interface ShoppingMallMapper {
     }
 
     default OperationalStatus toOperationalStatus(shopping_mall.OperationalStatus status) {
-        return OperationalStatus.valueOf(status.name());
+        return OperationalStatus.valueOf(status.name().replaceAll(OPERATIONAL_STATUS, ""));
     }
 
     default OperationalStatus toOperationalStatus(UpdateStatusRequest request) {
-        return OperationalStatus.valueOf(request.getStatus().name());
+        return OperationalStatus.valueOf(request.getStatus().name().replaceAll(OPERATIONAL_STATUS, ""));
     }
 
     default shopping_mall.OperationalStatus toOperationalStatus(OperationalStatus status) {
-        return shopping_mall.OperationalStatus.valueOf(status.name());
+        return shopping_mall.OperationalStatus.valueOf(OPERATIONAL_STATUS + status.name());
     }
 
     @Mapping(target = "hobbiesList", source = "hobbies")
