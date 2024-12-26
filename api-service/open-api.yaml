@@ -391,6 +391,23 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
+  /quarkus-demo-api/shopping-mall/notifications/send-alert:
+    post:
+      tags:
+        - shopping-mall-controller
+      summary: Send alert to Person list
+      operationId: send-alert-to-person-list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertToPersonList'
+      responses:
+        '204':
+          description: No Content
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
 components:
   schemas:
     Person:
@@ -509,3 +526,17 @@ components:
       required:
         - name
         - location
+    AlertToPersonList:
+      type: object
+      title: AlertToPersonList
+      properties:
+        idList:
+          type: array
+          items:
+            type: string
+            format: uuid
+        message:
+          type: string
+      required:
+        - idList
+        - message

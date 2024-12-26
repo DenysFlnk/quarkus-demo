@@ -3,6 +3,8 @@ package com.service;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Int32Value;
 import com.mapper.ShoppingMallMapper;
+import com.messaging.producer.ShoppingMallNotificationProducer;
+import com.quarkus.model.AlertToPersonList;
 import com.quarkus.model.ShoppingMall;
 import com.quarkus.model.ShoppingMallCreateRequest;
 import com.quarkus.model.UpdateShoppingMallStatusRequest;
@@ -14,12 +16,16 @@ import io.quarkus.grpc.GrpcClient;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import shopping_mall.ShoppingMallProtoService;
 
 @ApplicationScoped
+@RequiredArgsConstructor
 public class ShoppingMallService {
 
     private static final ShoppingMallMapper MALL_MAPPER = ShoppingMallMapper.INSTANCE;
+
+    private final ShoppingMallNotificationProducer notificationProducer;
 
     @GrpcClient("shopping-mall-service")
     ShoppingMallProtoService shoppingMallProtoService;
@@ -59,5 +65,13 @@ public class ShoppingMallService {
     @CacheInvalidateAll(cacheName = "shoppingMallListCache")
     public Uni<Void> deleteShoppingMall(@CacheKey Integer id) {
         return shoppingMallProtoService.deleteMall(Int32Value.of(id)).replaceWithVoid();
+    }
+
+    public Uni<Void> sendAlertToPersonList(AlertToPersonList alertToPersonList) {
+        if (alertToPersonList.getIdList().isEmpty() || alertToPersonList.getMessage().isEmpty()) {
+            throw new IllegalArgumentException("Person id list or message is empty");
+        }
+
+        return notificationProducer.buildAndPublish(alertToPersonList.getIdList(), alertToPersonList.getMessage());
     }
 }

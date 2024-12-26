@@ -1,6 +1,7 @@
 package com.controller;
 
 import com.quarkus.api.ShoppingMallControllerApi;
+import com.quarkus.model.AlertToPersonList;
 import com.quarkus.model.ShoppingMall;
 import com.quarkus.model.ShoppingMallCreateRequest;
 import com.quarkus.model.UpdateShoppingMallStatusRequest;
@@ -10,7 +11,7 @@ import jakarta.inject.Inject;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
-//@Authenticated
+@Authenticated
 public class ShoppingMallController implements ShoppingMallControllerApi {
 
     @Inject
@@ -45,5 +46,10 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
     public CompletionStage<Void> updateShoppingMallStatus(Integer id,
                                                           UpdateShoppingMallStatusRequest updateStatusRequest) {
         return shoppingMallService.updateShoppingMallStatus(id, updateStatusRequest).subscribeAsCompletionStage();
+    }
+
+    @Override
+    public CompletionStage<Void> sendAlertToPersonList(AlertToPersonList alertToPersonList) {
+        return shoppingMallService.sendAlertToPersonList(alertToPersonList).subscribeAsCompletionStage();
     }
 }
