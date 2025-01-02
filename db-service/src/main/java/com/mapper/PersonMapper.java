@@ -5,19 +5,18 @@ import java.util.List;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 import person.PersonList;
 import person.PersonObject;
 
-@Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE, uses = BaseProtoMapper.class)
+@Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE, uses = BaseProtoMapper.class,
+    componentModel = MappingConstants.ComponentModel.CDI)
 public interface PersonMapper {
-
-    PersonMapper INSTANCE = Mappers.getMapper(PersonMapper.class);
 
     default PersonList toPersonList(List<Person> personList) {
         return PersonList.newBuilder().addAllPerson(personList.stream()
-            .map(INSTANCE::toPersonObject)
+            .map(this::toPersonObject)
             .toList())
             .build();
     }

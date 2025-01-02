@@ -8,9 +8,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 import shopping_mall.Location;
 
-@Mapper
+@Mapper(componentModel = MappingConstants.ComponentModel.CDI)
 public interface BaseProtoMapper {
 
     default Timestamp toTimestamp(LocalDate localDate) {

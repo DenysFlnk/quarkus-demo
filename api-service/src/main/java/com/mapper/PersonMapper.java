@@ -7,14 +7,13 @@ import java.util.List;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.MappingConstants;
 import person.PersonList;
 import person.PersonObject;
 
-@Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE)
+@Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE,
+    componentModel = MappingConstants.ComponentModel.CDI)
 public interface PersonMapper {
-
-    PersonMapper INSTANCE = Mappers.getMapper(PersonMapper.class);
 
     default Timestamp map(Long seconds) {
         return Timestamp.newBuilder().setSeconds(seconds).build();

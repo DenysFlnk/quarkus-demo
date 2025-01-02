@@ -5,16 +5,14 @@ import hobby.HobbyList;
 import hobby.HobbyObject;
 import java.util.List;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.MappingConstants;
 
-@Mapper
+@Mapper(componentModel = MappingConstants.ComponentModel.CDI)
 public interface HobbyMapper {
-
-    HobbyMapper INSTANCE = Mappers.getMapper(HobbyMapper.class);
 
     default List<Hobby> toHobbyList(HobbyList hobbyList) {
         return hobbyList.getHobbiesList().stream()
-            .map(INSTANCE::toHobby)
+            .map(this::toHobby)
             .toList();
     }
 

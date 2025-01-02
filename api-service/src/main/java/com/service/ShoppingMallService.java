@@ -23,7 +23,7 @@ import shopping_mall.ShoppingMallProtoService;
 @RequiredArgsConstructor
 public class ShoppingMallService {
 
-    private static final ShoppingMallMapper MALL_MAPPER = ShoppingMallMapper.INSTANCE;
+    private final ShoppingMallMapper mallMapper;
 
     private final ShoppingMallNotificationProducer notificationProducer;
 
@@ -32,32 +32,32 @@ public class ShoppingMallService {
 
     @CacheResult(cacheName = "shoppingMallListCache")
     public Uni<List<ShoppingMall>> getAllShoppingMalls() {
-        return shoppingMallProtoService.getAllMalls(Empty.getDefaultInstance()).map(MALL_MAPPER::toShoppingMallList);
+        return shoppingMallProtoService.getAllMalls(Empty.getDefaultInstance()).map(mallMapper::toShoppingMallList);
     }
 
     @CacheResult(cacheName = "shoppingMallCache")
     public Uni<ShoppingMall> getShoppingMallById(@CacheKey Integer id) {
-        return shoppingMallProtoService.getMall(Int32Value.of(id)).map(MALL_MAPPER::toShoppingMall);
+        return shoppingMallProtoService.getMall(Int32Value.of(id)).map(mallMapper::toShoppingMall);
     }
 
     @CacheInvalidateAll(cacheName = "shoppingMallListCache")
     public Uni<ShoppingMall> createShoppingMall(ShoppingMallCreateRequest shoppingMall) {
-        return shoppingMallProtoService.createMall(MALL_MAPPER.toShoppingMallObject(shoppingMall))
-            .map(MALL_MAPPER::toShoppingMall);
+        return shoppingMallProtoService.createMall(mallMapper.toShoppingMallObject(shoppingMall))
+            .map(mallMapper::toShoppingMall);
     }
 
     @CacheInvalidate(cacheName = "shoppingMallCache")
     @CacheInvalidateAll(cacheName = "shoppingMallListCache")
     public Uni<Void> updateShoppingMall(@CacheKey Integer id, ShoppingMall shoppingMall) {
         shoppingMall.setId(id);
-        return shoppingMallProtoService.updateMall(MALL_MAPPER.toShoppingMallObject(shoppingMall))
+        return shoppingMallProtoService.updateMall(mallMapper.toShoppingMallObject(shoppingMall))
             .replaceWithVoid();
     }
 
     @CacheInvalidate(cacheName = "shoppingMallCache")
     @CacheInvalidateAll(cacheName = "shoppingMallListCache")
     public Uni<Void> updateShoppingMallStatus(@CacheKey Integer id, UpdateShoppingMallStatusRequest request) {
-        return shoppingMallProtoService.updateMallStatus(MALL_MAPPER.toUpdateStatusRequest(id, request))
+        return shoppingMallProtoService.updateMallStatus(mallMapper.toUpdateStatusRequest(id, request))
             .replaceWithVoid();
     }
 

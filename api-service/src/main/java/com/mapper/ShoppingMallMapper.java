@@ -7,29 +7,28 @@ import java.util.List;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 import org.mapstruct.ValueMapping;
 import org.mapstruct.ValueMappings;
-import org.mapstruct.factory.Mappers;
 import shopping_mall.OperationalStatus;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
 import shopping_mall.UpdateStatusRequest;
 
-@Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE)
+@Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE,
+    componentModel = MappingConstants.ComponentModel.CDI)
 public interface ShoppingMallMapper {
-
-    ShoppingMallMapper INSTANCE = Mappers.getMapper(ShoppingMallMapper.class);
 
     default List<ShoppingMall> toShoppingMallList(ShoppingMallList shoppingMallList) {
         return shoppingMallList.getMallsList().stream()
-            .map(INSTANCE::toShoppingMall)
+            .map(this::toShoppingMall)
             .toList();
     }
 
     default UpdateStatusRequest toUpdateStatusRequest(Integer mallId, UpdateShoppingMallStatusRequest request) {
         return UpdateStatusRequest.newBuilder()
             .setMallId(mallId)
-            .setStatus(INSTANCE.toOperationalStatus(request.getOperationalStatus()))
+            .setStatus(this.toOperationalStatus(request.getOperationalStatus()))
             .build();
     }
 

@@ -10,14 +10,16 @@ import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.smallrye.mutiny.Uni;
 import java.util.ArrayList;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import person.PersonList;
 import person.PersonObject;
 import person.PersonProtoService;
 
 @GrpcService
+@RequiredArgsConstructor
 public class PersonService implements PersonProtoService {
 
-    private static final PersonMapper PERSON_MAPPER = PersonMapper.INSTANCE;
+    private final PersonMapper personMapper;
 
     @Override
     @WithSession
@@ -27,7 +29,7 @@ public class PersonService implements PersonProtoService {
             .ifNull()
             .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getValue()))
             .invoke(person -> person.setHobbies(new ArrayList<>()))
-            .map(PERSON_MAPPER::toPersonObject);
+            .map(personMapper::toPersonObject);
     }
 
     @Override
@@ -37,7 +39,7 @@ public class PersonService implements PersonProtoService {
             .onItem()
             .ifNull()
             .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getValue()))
-            .map(PERSON_MAPPER::toPersonObject);
+            .map(personMapper::toPersonObject);
     }
 
     @Override
@@ -46,13 +48,13 @@ public class PersonService implements PersonProtoService {
         return Person.<Person>listAll()
             .onItem()
             .invoke(list -> list.forEach(person -> person.setHobbies(new ArrayList<>())))
-            .map(PERSON_MAPPER::toPersonList);
+            .map(personMapper::toPersonList);
     }
 
     @Override
     @WithSession
     public Uni<PersonList> getAllPersonsWithHobbies(Empty request) {
-        return Person.findAllFetchHobbies().map(PERSON_MAPPER::toPersonList);
+        return Person.findAllFetchHobbies().map(personMapper::toPersonList);
     }
 
     @Override
@@ -61,20 +63,20 @@ public class PersonService implements PersonProtoService {
         return Person.findByHobby(request.getValue())
             .onItem()
             .invoke(list -> list.forEach(person -> person.setHobbies(new ArrayList<>())))
-            .map(PERSON_MAPPER::toPersonList);
+            .map(personMapper::toPersonList);
     }
 
     @Override
     @WithSession
     public Uni<PersonList> getPersonsWithHobbiesByHobby(StringValue request) {
-        return Person.findByHobbyFetchHobbies(request.getValue()).map(PERSON_MAPPER::toPersonList);
+        return Person.findByHobbyFetchHobbies(request.getValue()).map(personMapper::toPersonList);
     }
 
     @Override
     @WithSession
     public Uni<PersonObject> createPerson(PersonObject request) {
-        return Panache.withTransaction(PERSON_MAPPER.toPerson(request)::<Person>persist)
-            .map(PERSON_MAPPER::toPersonObject);
+        return Panache.withTransaction(personMapper.toPerson(request)::<Person>persist)
+            .map(personMapper::toPersonObject);
     }
 
     @Override
@@ -84,7 +86,7 @@ public class PersonService implements PersonProtoService {
                 .onItem()
                 .ifNull()
                 .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getId()))
-                .invoke(person -> PERSON_MAPPER.updatePerson(person, request)))
+                .invoke(person -> personMapper.updatePerson(person, request)))
             .replaceWith(Empty.getDefaultInstance());
     }
 
