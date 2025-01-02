@@ -7,6 +7,8 @@ import java.util.List;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ValueMapping;
+import org.mapstruct.ValueMappings;
 import org.mapstruct.factory.Mappers;
 import shopping_mall.OperationalStatus;
 import shopping_mall.ShoppingMallList;
@@ -18,8 +20,6 @@ public interface ShoppingMallMapper {
 
     ShoppingMallMapper INSTANCE = Mappers.getMapper(ShoppingMallMapper.class);
 
-    String OPERATIONAL_STATUS = "OPERATIONAL_STATUS_";
-
     default List<ShoppingMall> toShoppingMallList(ShoppingMallList shoppingMallList) {
         return shoppingMallList.getMallsList().stream()
             .map(INSTANCE::toShoppingMall)
@@ -29,17 +29,27 @@ public interface ShoppingMallMapper {
     default UpdateStatusRequest toUpdateStatusRequest(Integer mallId, UpdateShoppingMallStatusRequest request) {
         return UpdateStatusRequest.newBuilder()
             .setMallId(mallId)
-            .setStatus(OperationalStatus.valueOf(request.getOperationalStatus().name()))
+            .setStatus(INSTANCE.toOperationalStatus(request.getOperationalStatus()))
             .build();
     }
 
-    default com.quarkus.model.OperationalStatus toOperationalStatus(OperationalStatus operationalStatus) {
-        return com.quarkus.model.OperationalStatus.valueOf(operationalStatus.name().replaceAll(OPERATIONAL_STATUS, ""));
-    }
+    @ValueMappings({
+        @ValueMapping(target = "UNRECOGNIZED", source = "OPERATIONAL_STATUS_UNSPECIFIED"),
+        @ValueMapping(target = "OPEN", source = "OPERATIONAL_STATUS_OPEN"),
+        @ValueMapping(target = "CLOSED", source = "OPERATIONAL_STATUS_CLOSED"),
+        @ValueMapping(target = "UNDER_CONSTRUCTION", source = "OPERATIONAL_STATUS_UNDER_CONSTRUCTION"),
+        @ValueMapping(target = "RENOVATION", source = "OPERATIONAL_STATUS_RENOVATION")
+    })
+    com.quarkus.model.OperationalStatus toOperationalStatus(OperationalStatus operationalStatus);
 
-    default OperationalStatus toOperationalStatus(com.quarkus.model.OperationalStatus operationalStatus) {
-        return OperationalStatus.valueOf(OPERATIONAL_STATUS + operationalStatus.name());
-    }
+    @ValueMappings({
+        @ValueMapping(target = "OPERATIONAL_STATUS_UNSPECIFIED", source = "UNRECOGNIZED"),
+        @ValueMapping(target = "OPERATIONAL_STATUS_OPEN", source = "OPEN"),
+        @ValueMapping(target = "OPERATIONAL_STATUS_CLOSED", source = "CLOSED"),
+        @ValueMapping(target = "OPERATIONAL_STATUS_UNDER_CONSTRUCTION", source = "UNDER_CONSTRUCTION"),
+        @ValueMapping(target = "OPERATIONAL_STATUS_RENOVATION", source = "RENOVATION")
+    })
+    OperationalStatus toOperationalStatus(com.quarkus.model.OperationalStatus operationalStatus);
 
     @Mapping(target = "location", source = "location")
     @Mapping(target = "hobbies", source = "hobbiesList")

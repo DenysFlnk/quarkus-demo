@@ -508,6 +508,7 @@ components:
         - CLOSED
         - UNDER_CONSTRUCTION
         - RENOVATION
+        - UNRECOGNIZED
       title: OperationalStatus
     ShoppingMallCreateRequest:
       type: object
