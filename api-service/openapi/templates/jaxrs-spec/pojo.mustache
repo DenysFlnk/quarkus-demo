@@ -1,0 +1,174 @@
+{{#useSwaggerAnnotations}}
+import io.swagger.annotations.*;
+{{/useSwaggerAnnotations}}
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import java.util.function.Function;
+import java.util.Map;
+
+{{#discriminator}}{{>typeInfoAnnotation}}{{/discriminator}}{{#description}}/**
+ * {{.}}
+ **/{{/description}}
+{{#useSwaggerAnnotations}}{{#description}}@ApiModel(description = "{{{.}}}"){{/description}}{{/useSwaggerAnnotations}}{{#useMicroProfileOpenAPIAnnotations}}
+@org.eclipse.microprofile.openapi.annotations.media.Schema({{#title}}title="{{{.}}}", {{/title}}{{#description}}description="{{{.}}}"{{/description}}{{^description}}description=""{{/description}}){{/useMicroProfileOpenAPIAnnotations}}
+@JsonTypeName("{{name}}")
+{{>generatedAnnotation}}{{>additionalModelTypeAnnotations}}
+{{#vendorExtensions.x-class-extra-annotation}}
+{{{vendorExtensions.x-class-extra-annotation}}}
+{{/vendorExtensions.x-class-extra-annotation}}
+public class {{classname}} {{#parent}}extends {{{.}}}{{/parent}} {{#vendorExtensions.x-implements}}{{#-first}}implements {{{.}}}{{/-first}}{{^-first}}, {{{.}}}{{/-first}}{{/vendorExtensions.x-implements}} {
+
+  {{#vars}}
+  public static String _{{nameInSnakeCase}} = "{{name}}";
+  {{/vars}}
+
+  public static Map<String, Function<{{classname}}, ?>> GETTERS_ = Map.ofEntries(
+  {{#vars}}
+    Map.entry(_{{nameInSnakeCase}}, {{classname}}::{{getter}}){{^-last}}, {{/-last}}
+  {{/vars}}
+  );
+
+  {{#vars}}
+  {{#isEnum}}
+  {{^isContainer}}
+  {{>enumClass}}
+  {{/isContainer}}
+  {{#isContainer}}
+  {{#mostInnerItems}}
+  {{>enumClass}}
+  {{/mostInnerItems}}
+  {{/isContainer}}
+  {{/isEnum}}
+  {{#vendorExtensions.x-field-extra-annotation}}
+  {{{vendorExtensions.x-field-extra-annotation}}}
+  {{/vendorExtensions.x-field-extra-annotation}}
+  {{! the following lines are modified by lasar group: }}
+  {{#useBeanValidation}}@Valid{{/useBeanValidation}}
+  {{#openApiNullable}}
+  private {{>nullableDataType}} {{name}}{{#isNullable}} = JsonNullable.undefined(){{/isNullable}}{{^isNullable}}{{#defaultValue}} = {{{.}}}{{/defaultValue}}{{/isNullable}};
+  {{/openApiNullable}}
+  {{^openApiNullable}}
+  private {{>nullableDataType}} {{name}}{{#defaultValue}} = {{{.}}}{{/defaultValue}};
+  {{/openApiNullable}}
+  {{! end modified block }}
+  {{/vars}}
+
+  {{! generate builder block is removed by lasar group }}
+
+  {{#vars}}
+  /**
+   {{#description}}
+   * {{.}}
+   {{/description}}
+   {{#minimum}}
+   * minimum: {{.}}
+   {{/minimum}}
+   {{#maximum}}
+   * maximum: {{.}}
+   {{/maximum}}
+   **/
+  public {{classname}} {{name}}({{{datatypeWithEnum}}} {{name}}) {
+  {{! the following lines are modified by lasar group: }}
+    {{#openApiNullable}}
+    this.{{name}} = {{#isNullable}}JsonNullable.of({{name}}){{/isNullable}}{{^isNullable}}{{name}}{{/isNullable}};
+    {{/openApiNullable}}
+    {{^openApiNullable}}
+    this.{{name}} = {{name}};
+    {{/openApiNullable}}
+  {{! end modified block }}
+    return this;
+  }
+
+  {{#vendorExtensions.x-extra-annotation}}{{{vendorExtensions.x-extra-annotation}}}{{/vendorExtensions.x-extra-annotation}}{{#useSwaggerAnnotations}}
+  @ApiModelProperty({{#example}}example = "{{{.}}}", {{/example}}{{#required}}required = {{required}}, {{/required}}value = "{{{description}}}"){{/useSwaggerAnnotations}}{{#useMicroProfileOpenAPIAnnotations}}
+  @org.eclipse.microprofile.openapi.annotations.media.Schema({{#example}}example = "{{{.}}}", {{/example}}{{#required}}required = {{required}}, {{/required}}description = "{{{description}}}"){{/useMicroProfileOpenAPIAnnotations}}
+  @JsonProperty("{{baseName}}")
+{{#useBeanValidation}}{{>beanValidation}}{{/useBeanValidation}}  public {{>beanValidatedNullableDataType}} {{getter}}() {
+    return {{name}};
+  }
+
+  @JsonProperty("{{baseName}}")
+  {{#vendorExtensions.x-setter-extra-annotation}}{{{vendorExtensions.x-setter-extra-annotation}}}
+  {{! the following line is modified by lasar group: }}
+  {{/vendorExtensions.x-setter-extra-annotation}}public void {{setter}}({{>nullableDataType}} {{name}}) {
+    this.{{name}} = {{name}};
+  }
+
+  {{#isArray}}
+
+  {{! the following lines are modified by lasar group: }}
+  public {{classname}} add{{nameInCamelCase}}Item({{{items.datatypeWithEnum}}} {{name}}Item) {
+    {{#openApiNullable}}
+    if (this.{{name}} == null{{#isNullable}} || !this.{{name}}.isPresent(){{/isNullable}}) {
+      this.{{name}} = {{#isNullable}}JsonNullable.of({{/isNullable}}{{{defaultValue}}}{{^defaultValue}}new {{#uniqueItems}}LinkedHashSet{{/uniqueItems}}{{^uniqueItems}}ArrayList{{/uniqueItems}}<>(){{/defaultValue}}{{#isNullable}}){{/isNullable}};
+    }
+    this.{{name}}{{#isNullable}}.get(){{/isNullable}}.add({{name}}Item);
+    {{/openApiNullable}}
+    {{^openApiNullable}}
+    if (this.{{name}} == null) {
+      this.{{name}} = {{{defaultValue}}}{{^defaultValue}}new {{#uniqueItems}}LinkedHashSet{{/uniqueItems}}{{^uniqueItems}}ArrayList{{/uniqueItems}}<>(){{/defaultValue}};
+    }
+    this.{{name}}.add({{name}}Item);
+    {{/openApiNullable}}
+  {{! end modified block }}
+    return this;
+  }
+  {{/isArray}}
+  {{#isMap}}
+
+  public {{classname}} put{{nameInCamelCase}}Item(String key, {{{items.datatypeWithEnum}}} {{name}}Item) {
+    if (this.{{name}} == null) {
+      this.{{name}} = {{{defaultValue}}}{{^defaultValue}}new HashMap<>(){{/defaultValue}};
+    }
+    this.{{name}}.put(key, {{name}}Item);
+    return this;
+  }
+  {{/isMap}}
+  {{/vars}}
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }{{#hasVars}}
+    {{classname}} {{classVarName}} = ({{classname}}) o;
+    return {{#vars}}{{#isByteArray}}Arrays{{/isByteArray}}{{^isByteArray}}Objects{{/isByteArray}}.equals(this.{{name}}, {{classVarName}}.{{name}}){{^-last}} &&
+        {{/-last}}{{/vars}}{{#parent}} &&
+        super.equals(o){{/parent}};{{/hasVars}}{{^hasVars}}
+    return {{#parent}}super.equals(o){{/parent}}{{^parent}}true{{/parent}};{{/hasVars}}
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash({{#vars}}{{^isByteArray}}{{name}}{{/isByteArray}}{{#isByteArray}}Arrays.hashCode({{name}}){{/isByteArray}}{{^-last}}, {{/-last}}{{/vars}}{{#parent}}{{#hasVars}}, {{/hasVars}}super.hashCode(){{/parent}});
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class {{classname}} {\n");
+    {{#parent}}sb.append("    ").append(toIndentedString(super.toString())).append("\n");{{/parent}}
+    {{#vars}}sb.append("    {{name}}: ").append(toIndentedString({{name}})).append("\n");
+    {{/vars}}sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
+
+  {{! generate builders block is removed by lasar }}
+}

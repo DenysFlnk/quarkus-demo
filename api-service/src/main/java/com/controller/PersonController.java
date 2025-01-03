@@ -7,10 +7,10 @@ import com.security.Role;
 import com.service.PersonService;
 import io.quarkus.security.Authenticated;
 import io.quarkus.security.identity.SecurityIdentity;
+import io.smallrye.mutiny.Uni;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import java.util.List;
-import java.util.concurrent.CompletionStage;
 
 @Authenticated
 public class PersonController implements PersonControllerApi {
@@ -23,46 +23,46 @@ public class PersonController implements PersonControllerApi {
 
     @RolesAllowed({Role.PERSON_VIEW, Role.PERSON_HOBBY_VIEW})
     @Override
-    public CompletionStage<List<Person>> getAllPersons() {
+    public Uni<List<Person>> getAllPersons() {
         if (identity.getRoles().contains(Role.PERSON_HOBBY_VIEW)) {
-            return personService.getAllPersonsWithHobbies().subscribeAsCompletionStage();
+            return personService.getAllPersonsWithHobbies();
         } else {
-            return personService.getAllPersons().subscribeAsCompletionStage();
+            return personService.getAllPersons();
         }
     }
 
     @RolesAllowed({Role.PERSON_VIEW, Role.PERSON_HOBBY_VIEW})
     @Override
-    public CompletionStage<List<Person>> getAllPersonsByHobby(String hobby) {
+    public Uni<List<Person>> getAllPersonsByHobby(String hobby) {
         if (identity.getRoles().contains(Role.PERSON_HOBBY_VIEW)) {
-            return personService.getPersonsWithHobbiesByHobby(hobby).subscribeAsCompletionStage();
+            return personService.getPersonsWithHobbiesByHobby(hobby);
         } else {
-            return personService.getPersonsByHobby(hobby).subscribeAsCompletionStage();
+            return personService.getPersonsByHobby(hobby);
         }
     }
 
     @RolesAllowed({Role.PERSON_VIEW, Role.PERSON_HOBBY_VIEW})
     @Override
-    public CompletionStage<Person> getPerson(String id) {
+    public Uni<Person> getPerson(String id) {
         if (identity.getRoles().contains(Role.PERSON_HOBBY_VIEW)) {
-            return personService.getPersonWithHobby(id).subscribeAsCompletionStage();
+            return personService.getPersonWithHobby(id);
         } else {
-            return personService.getPerson(id).subscribeAsCompletionStage();
+            return personService.getPerson(id);
         }
     }
 
     @Override
-    public CompletionStage<Person> createPerson(PersonCreateRequest personCreateRequest) {
-        return personService.createPerson(personCreateRequest).subscribeAsCompletionStage();
+    public Uni<Person> createPerson(PersonCreateRequest personCreateRequest) {
+        return personService.createPerson(personCreateRequest);
     }
 
     @Override
-    public CompletionStage<Void> deletePerson(String id) {
-        return personService.deletePerson(id).subscribeAsCompletionStage();
+    public Uni<Void> deletePerson(String id) {
+        return personService.deletePerson(id);
     }
 
     @Override
-    public CompletionStage<Void> updatePerson(String id, Person person) {
-        return personService.updatePerson(id, person).subscribeAsCompletionStage();
+    public Uni<Void> updatePerson(String id, Person person) {
+        return personService.updatePerson(id, person);
     }
 }

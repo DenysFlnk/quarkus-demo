@@ -189,6 +189,7 @@
             <configuration>
               <inputSpec>${project.basedir}/open-api.yaml</inputSpec>
               <generatorName>jaxrs-spec</generatorName>
+              <templateDirectory>${project.basedir}/openapi/templates/jaxrs-spec</templateDirectory>
               <library>quarkus</library>
               <configOptions>
                 <supportAsync>true</supportAsync>
@@ -199,6 +200,7 @@
                 <interfaceOnly>true</interfaceOnly>
                 <disallowAdditionalPropertiesIfNotPresent>false</disallowAdditionalPropertiesIfNotPresent>
                 <useTags>true</useTags>
+                <useMutiny>true</useMutiny>
               </configOptions>
               <apiPackage>com.quarkus.api</apiPackage>
               <modelPackage>com.quarkus.model</modelPackage>

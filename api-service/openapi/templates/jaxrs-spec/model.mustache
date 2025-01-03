@@ -1,0 +1,28 @@
+package {{package}};
+
+import java.util.Objects;
+{{#imports}}import {{import}};
+{{/imports}}
+{{#jackson}}
+  import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+{{/jackson}}
+{{#serializableModel}}
+  import java.io.Serializable;
+{{/serializableModel}}
+{{#useBeanValidation}}
+  import {{javaxPackage}}.validation.constraints.*;
+  import {{javaxPackage}}.validation.Valid;
+{{/useBeanValidation}}
+
+{{#models}}
+  {{#model}}
+    {{#isEnum}}
+      {{>enumOuterClass}}
+    {{/isEnum}}
+    {{^isEnum}}
+    {{! the following lines are modified by lasar group: }}
+      {{#vendorExtensions.x-is-one-of-interface}}{{>oneof_interface}}{{/vendorExtensions.x-is-one-of-interface}}{{^vendorExtensions.x-is-one-of-interface}}{{>pojo}}{{/vendorExtensions.x-is-one-of-interface}}
+    {{! end modified block }}
+    {{/isEnum}}
+  {{/model}}
+{{/models}}
