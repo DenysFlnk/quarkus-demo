@@ -15,7 +15,7 @@ import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
 import shopping_mall.UpdateStatusRequest;
 
-@Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE,
+@Mapper(uses = JsonNullableMapper.class, collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE,
     componentModel = MappingConstants.ComponentModel.CDI)
 public interface ShoppingMallMapper {
 

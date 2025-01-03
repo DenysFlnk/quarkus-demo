@@ -359,7 +359,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ShoppingMall'
+              $ref: '#/components/schemas/ShoppingMallUpdateRequest'
       responses:
         '204':
           description: No Content
@@ -527,6 +527,25 @@ components:
       required:
         - name
         - location
+    ShoppingMallUpdateRequest:
+      type: object
+      title: ShoppingMallUpdateRequest
+      properties:
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/OperationalStatus'
+        location:
+          $ref: '#/components/schemas/Location'
+          nullable: true
+        hobbies:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/Hobby'
+      required:
+        - name
+        - status
     AlertToPersonList:
       type: object
       title: AlertToPersonList

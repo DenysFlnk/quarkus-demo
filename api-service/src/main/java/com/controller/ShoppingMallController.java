@@ -4,6 +4,7 @@ import com.quarkus.api.ShoppingMallControllerApi;
 import com.quarkus.model.AlertToPersonList;
 import com.quarkus.model.ShoppingMall;
 import com.quarkus.model.ShoppingMallCreateRequest;
+import com.quarkus.model.ShoppingMallUpdateRequest;
 import com.quarkus.model.UpdateShoppingMallStatusRequest;
 import com.service.ShoppingMallService;
 import io.quarkus.security.Authenticated;
@@ -38,8 +39,9 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
     }
 
     @Override
-    public CompletionStage<Void> updateShoppingMall(Integer id, ShoppingMall shoppingMall) {
-        return shoppingMallService.updateShoppingMall(id, shoppingMall).subscribeAsCompletionStage();
+    public CompletionStage<Void> updateShoppingMall(Integer id, ShoppingMallUpdateRequest shoppingMallUpdateRequest) {
+        //TODO update service method
+        return null;
     }
 
     @Override
