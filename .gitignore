@@ -12,6 +12,7 @@ release.properties
 *.iws
 db-service/.idea/
 api-service/.idea/
+api-service/web-socket-client-python/.idea/
 
 # Plugin directory
 /.quarkus/cli/plugins/
@@ -23,3 +24,6 @@ db-service/README.md
 # Local environment
 api-service/*.env
 db-service/*.env
+
+# Python environment
+api-service/web-socket-client-python/.venv/
