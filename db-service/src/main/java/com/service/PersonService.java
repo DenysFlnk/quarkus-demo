@@ -17,12 +17,12 @@ import person.PersonProtoService;
 
 @GrpcService
 @RequiredArgsConstructor
+@WithSession
 public class PersonService implements PersonProtoService {
 
     private final PersonMapper personMapper;
 
     @Override
-    @WithSession
     public Uni<PersonObject> getPerson(StringValue request) {
         return Person.<Person>findById(UUID.fromString(request.getValue()))
             .onItem()
@@ -33,7 +33,6 @@ public class PersonService implements PersonProtoService {
     }
 
     @Override
-    @WithSession
     public Uni<PersonObject> getPersonWithHobby(StringValue request) {
         return Person.findByIdFetchHobbies(UUID.fromString(request.getValue()))
             .onItem()
@@ -43,7 +42,6 @@ public class PersonService implements PersonProtoService {
     }
 
     @Override
-    @WithSession
     public Uni<PersonList> getAllPersons(Empty request) {
         return Person.<Person>listAll()
             .onItem()
@@ -52,13 +50,11 @@ public class PersonService implements PersonProtoService {
     }
 
     @Override
-    @WithSession
     public Uni<PersonList> getAllPersonsWithHobbies(Empty request) {
         return Person.findAllFetchHobbies().map(personMapper::toPersonList);
     }
 
     @Override
-    @WithSession
     public Uni<PersonList> getPersonsByHobby(StringValue request) {
         return Person.findByHobby(request.getValue())
             .onItem()
@@ -67,20 +63,17 @@ public class PersonService implements PersonProtoService {
     }
 
     @Override
-    @WithSession
     public Uni<PersonList> getPersonsWithHobbiesByHobby(StringValue request) {
         return Person.findByHobbyFetchHobbies(request.getValue()).map(personMapper::toPersonList);
     }
 
     @Override
-    @WithSession
     public Uni<PersonObject> createPerson(PersonObject request) {
         return Panache.withTransaction(personMapper.toPerson(request)::<Person>persist)
             .map(personMapper::toPersonObject);
     }
 
     @Override
-    @WithSession
     public Uni<Empty> updatePerson(PersonObject request) {
         return Panache.withTransaction(() -> Person.<Person>findById(UUID.fromString(request.getId()))
                 .onItem()
@@ -91,7 +84,6 @@ public class PersonService implements PersonProtoService {
     }
 
     @Override
-    @WithSession
     public Uni<Empty> deletePerson(StringValue request) {
         return Panache.withTransaction(() -> Person.deleteById(UUID.fromString(request.getValue())))
             .replaceWith(Empty.getDefaultInstance());

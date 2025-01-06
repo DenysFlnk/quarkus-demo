@@ -4,12 +4,12 @@ import com.quarkus.api.ShoppingMallControllerApi;
 import com.quarkus.model.AlertToPersonList;
 import com.quarkus.model.ShoppingMall;
 import com.quarkus.model.ShoppingMallCreateRequest;
-import com.quarkus.model.UpdateShoppingMallStatusRequest;
+import com.quarkus.model.ShoppingMallUpdateRequest;
 import com.service.ShoppingMallService;
 import io.quarkus.security.Authenticated;
+import io.smallrye.mutiny.Uni;
 import jakarta.inject.Inject;
 import java.util.List;
-import java.util.concurrent.CompletionStage;
 
 @Authenticated
 public class ShoppingMallController implements ShoppingMallControllerApi {
@@ -18,38 +18,32 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
     ShoppingMallService shoppingMallService;
 
     @Override
-    public CompletionStage<List<ShoppingMall>> getAllShoppingMalls() {
-        return shoppingMallService.getAllShoppingMalls().subscribeAsCompletionStage();
+    public Uni<List<ShoppingMall>> getAllShoppingMalls() {
+        return shoppingMallService.getAllShoppingMalls();
     }
 
     @Override
-    public CompletionStage<ShoppingMall> getShoppingMall(Integer id) {
-        return shoppingMallService.getShoppingMallById(id).subscribeAsCompletionStage();
+    public Uni<ShoppingMall> getShoppingMall(Integer id) {
+        return shoppingMallService.getShoppingMallById(id);
     }
 
     @Override
-    public CompletionStage<ShoppingMall> createShoppingMall(ShoppingMallCreateRequest shoppingMallCreateRequest) {
-        return shoppingMallService.createShoppingMall(shoppingMallCreateRequest).subscribeAsCompletionStage();
+    public Uni<ShoppingMall> createShoppingMall(ShoppingMallCreateRequest shoppingMallCreateRequest) {
+        return shoppingMallService.createShoppingMall(shoppingMallCreateRequest);
     }
 
     @Override
-    public CompletionStage<Void> deleteShoppingMall(Integer id) {
-        return shoppingMallService.deleteShoppingMall(id).subscribeAsCompletionStage();
+    public Uni<Void> deleteShoppingMall(Integer id) {
+        return shoppingMallService.deleteShoppingMall(id);
     }
 
     @Override
-    public CompletionStage<Void> updateShoppingMall(Integer id, ShoppingMall shoppingMall) {
-        return shoppingMallService.updateShoppingMall(id, shoppingMall).subscribeAsCompletionStage();
+    public Uni<Void> updateShoppingMall(Integer id, ShoppingMallUpdateRequest shoppingMallUpdateRequest) {
+        return shoppingMallService.updateShoppingMall(id, shoppingMallUpdateRequest);
     }
 
     @Override
-    public CompletionStage<Void> updateShoppingMallStatus(Integer id,
-                                                          UpdateShoppingMallStatusRequest updateStatusRequest) {
-        return shoppingMallService.updateShoppingMallStatus(id, updateStatusRequest).subscribeAsCompletionStage();
-    }
-
-    @Override
-    public CompletionStage<Void> sendAlertToPersonList(AlertToPersonList alertToPersonList) {
-        return shoppingMallService.sendAlertToPersonList(alertToPersonList).subscribeAsCompletionStage();
+    public Uni<Void> sendAlertToPersonList(AlertToPersonList alertToPersonList) {
+        return shoppingMallService.sendAlertToPersonList(alertToPersonList);
     }
 }

@@ -7,7 +7,7 @@ import com.messaging.producer.ShoppingMallNotificationProducer;
 import com.quarkus.model.AlertToPersonList;
 import com.quarkus.model.ShoppingMall;
 import com.quarkus.model.ShoppingMallCreateRequest;
-import com.quarkus.model.UpdateShoppingMallStatusRequest;
+import com.quarkus.model.ShoppingMallUpdateRequest;
 import io.quarkus.cache.CacheInvalidate;
 import io.quarkus.cache.CacheInvalidateAll;
 import io.quarkus.cache.CacheKey;
@@ -48,16 +48,10 @@ public class ShoppingMallService {
 
     @CacheInvalidate(cacheName = "shoppingMallCache")
     @CacheInvalidateAll(cacheName = "shoppingMallListCache")
-    public Uni<Void> updateShoppingMall(@CacheKey Integer id, ShoppingMall shoppingMall) {
-        shoppingMall.setId(id);
-        return shoppingMallProtoService.updateMall(mallMapper.toShoppingMallObject(shoppingMall))
-            .replaceWithVoid();
-    }
-
-    @CacheInvalidate(cacheName = "shoppingMallCache")
-    @CacheInvalidateAll(cacheName = "shoppingMallListCache")
-    public Uni<Void> updateShoppingMallStatus(@CacheKey Integer id, UpdateShoppingMallStatusRequest request) {
-        return shoppingMallProtoService.updateMallStatus(mallMapper.toUpdateStatusRequest(id, request))
+    public Uni<Void> updateShoppingMall(@CacheKey Integer id, ShoppingMallUpdateRequest shoppingMall) {
+        return shoppingMallProtoService.getMall(Int32Value.of(id))
+            .flatMap(mall ->
+                shoppingMallProtoService.updateMall(mallMapper.updateAndBuildShoppingMall(mall, shoppingMall)))
             .replaceWithVoid();
     }
 
