@@ -17,8 +17,7 @@ import shopping_mall.ShoppingMallObject;
 @Mapper(
     uses = BaseProtoMapper.class,
     collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE,
-    componentModel = MappingConstants.ComponentModel.CDI,
-    nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+    componentModel = MappingConstants.ComponentModel.CDI)
 public interface ShoppingMallMapper {
 
     default ShoppingMallList toShoppingMallList(List<ShoppingMall> malls) {
@@ -49,6 +48,7 @@ public interface ShoppingMallMapper {
 
     @Mapping(target = "hobbiesList", source = "hobbies")
     @Mapping(target = "status", source = "operationalStatus")
+    @Mapping(target = "location", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
     ShoppingMallObject toShoppingMallObject(ShoppingMall mall);
 
     @Mapping(target = "hobbies", source = "hobbiesList")
