@@ -8,15 +8,18 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.ValueMapping;
 import org.mapstruct.ValueMappings;
-import org.mapstruct.factory.Mappers;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
-import shopping_mall.UpdateStatusRequest;
 
-@Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE, uses = BaseProtoMapper.class,
-    componentModel = MappingConstants.ComponentModel.CDI)
+@Mapper(
+    uses = BaseProtoMapper.class,
+    collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE,
+    componentModel = MappingConstants.ComponentModel.CDI,
+    nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface ShoppingMallMapper {
 
     default ShoppingMallList toShoppingMallList(List<ShoppingMall> malls) {
@@ -45,10 +48,6 @@ public interface ShoppingMallMapper {
     })
     shopping_mall.OperationalStatus toOperationalStatus(OperationalStatus status);
 
-    default OperationalStatus toOperationalStatus(UpdateStatusRequest request) {
-        return this.toOperationalStatus(request.getStatus());
-    }
-
     @Mapping(target = "hobbiesList", source = "hobbies")
     @Mapping(target = "status", source = "operationalStatus")
     ShoppingMallObject toShoppingMallObject(ShoppingMall mall);
@@ -59,5 +58,6 @@ public interface ShoppingMallMapper {
     ShoppingMall toShoppingMall(ShoppingMallObject shoppingMallObject);
 
     @Mapping(target = "hobbies", source = "hobbiesList")
+    @Mapping(target = "operationalStatus", source = "status")
     void updateShoppingMall(@MappingTarget ShoppingMall mall, ShoppingMallObject shoppingMallObject);
 }

@@ -12,7 +12,7 @@ import person.PersonList;
 import person.PersonObject;
 
 @Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE,
-    componentModel = MappingConstants.ComponentModel.CDI)
+    componentModel =  MappingConstants.ComponentModel.JAKARTA_CDI)
 public interface PersonMapper {
 
     default Timestamp map(Long seconds) {

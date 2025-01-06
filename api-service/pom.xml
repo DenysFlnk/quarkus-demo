@@ -22,6 +22,7 @@
     <mapstruct-processor.version>1.6.3</mapstruct-processor.version>
     <lombok.version>1.18.34</lombok.version>
     <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
+    <openapi-generator-maven-plugin.version>7.10.0</openapi-generator-maven-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -180,7 +181,7 @@
       <plugin>
         <groupId>org.openapitools</groupId>
         <artifactId>openapi-generator-maven-plugin</artifactId>
-        <version>7.9.0</version>
+        <version>${openapi-generator-maven-plugin.version}</version>
         <executions>
           <execution>
             <goals>

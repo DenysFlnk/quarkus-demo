@@ -5,7 +5,6 @@ import com.quarkus.model.AlertToPersonList;
 import com.quarkus.model.ShoppingMall;
 import com.quarkus.model.ShoppingMallCreateRequest;
 import com.quarkus.model.ShoppingMallUpdateRequest;
-import com.quarkus.model.UpdateShoppingMallStatusRequest;
 import com.service.ShoppingMallService;
 import io.quarkus.security.Authenticated;
 import io.smallrye.mutiny.Uni;
@@ -40,14 +39,7 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
 
     @Override
     public Uni<Void> updateShoppingMall(Integer id, ShoppingMallUpdateRequest shoppingMallUpdateRequest) {
-        //TODO update service method
-        return null;
-    }
-
-    @Override
-    public Uni<Void> updateShoppingMallStatus(Integer id,
-                                                          UpdateShoppingMallStatusRequest updateStatusRequest) {
-        return shoppingMallService.updateShoppingMallStatus(id, updateStatusRequest);
+        return shoppingMallService.updateShoppingMall(id, shoppingMallUpdateRequest);
     }
 
     @Override

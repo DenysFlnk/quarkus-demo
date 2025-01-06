@@ -1,16 +1,12 @@
-openapi: 3.1.0
+openapi: 3.0.0
 info:
   version: '1.0'
   title: quarkus-demo-api
-  summary: Quarkus api for Person CRUD operations
   description: Quarkus api for Person CRUD operations
   contact:
     name: Denys
     url: 'https://github.com/DenysFlnk'
     email: filonenko.denys94@gmail.com
-  license:
-    url: 'https://github.com/DenysFlnk'
-    name: 'Free license '
 servers:
   - url: 'http://localhost:8080'
     description: Person-api
@@ -366,31 +362,6 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
-    patch:
-      tags:
-        - shopping-mall-controller
-      summary: Update OperationalStatus of ShoppingMall
-      operationId: update-shopping-mall-status
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                operationalStatus:
-                  $ref: '#/components/schemas/OperationalStatus'
-      responses:
-        '204':
-          description: No Content
-      servers:
-        - url: 'http://localhost:8080'
-          description: Person-api
   /quarkus-demo-api/shopping-mall/notifications/send-alert:
     post:
       tags:
@@ -536,8 +507,9 @@ components:
         status:
           $ref: '#/components/schemas/OperationalStatus'
         location:
-          $ref: '#/components/schemas/Location'
-          nullable: true
+          oneOf:
+            - $ref: '#/components/schemas/Location'
+            - nullable: true
         hobbies:
           type: array
           nullable: true

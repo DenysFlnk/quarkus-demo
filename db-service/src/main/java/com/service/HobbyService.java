@@ -16,12 +16,12 @@ import lombok.RequiredArgsConstructor;
 
 @GrpcService
 @RequiredArgsConstructor
+@WithSession
 public class HobbyService implements HobbyProtoService {
 
     private final HobbyMapper hobbyMapper;
 
     @Override
-    @WithSession
     public Uni<HobbyObject> getHobby(Int32Value request) {
         return Hobby.<Hobby>findById(request.getValue())
             .onItem()
@@ -31,19 +31,16 @@ public class HobbyService implements HobbyProtoService {
     }
 
     @Override
-    @WithSession
     public Uni<HobbyList> getAllHobbies(Empty request) {
         return Hobby.<Hobby>listAll().map(hobbyMapper::toHobbyList);
     }
 
     @Override
-    @WithSession
     public Uni<HobbyObject> createHobby(StringValue request) {
         return Panache.withTransaction(hobbyMapper.toHobby(request)::<Hobby>persist).map(hobbyMapper::toHobbyObject);
     }
 
     @Override
-    @WithSession
     public Uni<Empty> updateHobby(HobbyObject request) {
         return Panache.withTransaction(() -> Hobby.<Hobby>findById(request.getId())
                 .onItem()
@@ -54,7 +51,6 @@ public class HobbyService implements HobbyProtoService {
     }
 
     @Override
-    @WithSession
     public Uni<Empty> deleteHobby(Int32Value request) {
         return Panache.withTransaction(() -> Hobby.deleteById(request.getValue()))
             .replaceWith(Empty.getDefaultInstance());
