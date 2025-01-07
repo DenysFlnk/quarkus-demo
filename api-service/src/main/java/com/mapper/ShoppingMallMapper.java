@@ -4,6 +4,7 @@ import com.quarkus.model.Hobby;
 import com.quarkus.model.ShoppingMall;
 import com.quarkus.model.ShoppingMallCreateRequest;
 import com.quarkus.model.ShoppingMallUpdateRequest;
+import com.web_socket.dto.ShoppingMallUpdateRequestDto;
 import java.util.List;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.CollectionMappingStrategy;
@@ -88,7 +89,10 @@ public interface ShoppingMallMapper {
 
     @Mapping(target = "location", source = "location")
     @Mapping(target = "hobbiesList", source = "hobbies")
+    @Mapping(target = "status", source = "operationalStatus")
     ShoppingMallObject toShoppingMallObject(ShoppingMallCreateRequest shoppingMall);
+
+    ShoppingMallUpdateRequest toShoppingMallUpdateRequest(ShoppingMallUpdateRequestDto dto);
 
     @Mapping(target = "location", ignore = true)
     @Mapping(target = "hobbiesList", ignore = true)
