@@ -75,4 +75,8 @@ public class ShoppingMallService {
     public Uni<File> getShoppingMallListXlsxFile() {
         return getAllShoppingMalls().map(documentService::convertShoppingMallListToXlsx);
     }
+
+    public Uni<File> getShoppingMallListDocxFile() {
+        return getAllShoppingMalls().map(documentService::convertShoppingMallListToDocx);
+    }
 }

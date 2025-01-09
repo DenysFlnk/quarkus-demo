@@ -396,6 +396,23 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
+  /quarkus-demo-api/shopping-malls/download/docx:
+    get:
+      tags:
+        - shopping-mall-controller
+      summary: Download ShoppingMall list as .docx
+      operationId: download-shopping-malls-list-docx
+      responses:
+        '200':
+          description: OK
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
 components:
   schemas:
     Person:

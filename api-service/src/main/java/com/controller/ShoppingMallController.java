@@ -55,4 +55,12 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
                 .header("Content-Disposition", "attachment; filename=shopping_mall_list.xlsx")
                 .build());
     }
+
+    @Override
+    public Uni<Response> downloadShoppingMallsListDocx() {
+        return shoppingMallService.getShoppingMallListDocxFile()
+            .map(file -> Response.ok(file)
+                .header("Content-Disposition", "attachment; filename=shopping_mall_list.docx")
+                .build());
+    }
 }

@@ -13,7 +13,10 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.docx4j.XmlUtils;
 import org.docx4j.openpackaging.packages.SpreadsheetMLPackage;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.SpreadsheetML.WorksheetPart;
+import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
+import org.docx4j.wml.Document;
 import org.xlsx4j.jaxb.Context;
 import org.xlsx4j.sml.Worksheet;
 
@@ -21,7 +24,9 @@ import org.xlsx4j.sml.Worksheet;
 public class DocumentService {
 
     private static final String XLSX_TEMPLATE_PATH = "/docs_templates/template.xlsx";
-    private static final String MALL_TABLE_TEMPLATE_PATH = "/docs_templates/shopping_mall_table.vm";
+    private static final String DOCX_TEMPLATE_PATH = "/docs_templates/template.docx";
+    private static final String MALL_LIST_TABLE_TEMPLATE_PATH = "/docs_templates/shopping_mall_list_xlsx.vm";
+    private static final String MALL_LIST_DOCX_TEMPLATE_PATH = "/docs_templates/shopping_mall_list_docx.vm";
 
     private final VelocityEngine engine;
 
@@ -35,19 +40,11 @@ public class DocumentService {
     }
 
     public File convertShoppingMallListToXlsx(List<ShoppingMall> malls) {
-        Template template = engine.getTemplate(MALL_TABLE_TEMPLATE_PATH);
-
-        VelocityContext context = new VelocityContext();
-        context.put("malls", malls);
-
-        StringWriter writer = new StringWriter();
-        template.merge(context, writer);
-
-        String updatedXml = writer.toString();
-
-        String templateFile = DocumentService.class.getResource(XLSX_TEMPLATE_PATH).getPath();
+        String updatedXml = getShoppingMallListUpdatedXml(malls, MALL_LIST_TABLE_TEMPLATE_PATH);
 
         try {
+            String templateFile = DocumentService.class.getResource(XLSX_TEMPLATE_PATH).getPath();
+
             SpreadsheetMLPackage xlsxPackage = SpreadsheetMLPackage.load(new File(templateFile));
             WorksheetPart worksheetPart = xlsxPackage.getWorkbookPart().getWorksheet(0);
 
@@ -65,5 +62,41 @@ public class DocumentService {
             Log.warn("Exception occurred in convertShoppingMallListToXlsx()");
             throw new RuntimeException(e);
         }
+    }
+
+    public File convertShoppingMallListToDocx(List<ShoppingMall> malls) {
+        String updatedXml = getShoppingMallListUpdatedXml(malls, MALL_LIST_DOCX_TEMPLATE_PATH);
+
+        try {
+            String templateFile = DocumentService.class.getResource(DOCX_TEMPLATE_PATH).getPath();
+
+            WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(new File(templateFile));
+            MainDocumentPart mainDocumentPart = wordMLPackage.getMainDocumentPart();
+
+            Document document = (Document) XmlUtils.unmarshalString(updatedXml);
+            mainDocumentPart.setContents(document);
+
+            File tempFile = File.createTempFile("document-", ".docx");
+            tempFile.deleteOnExit();
+
+            wordMLPackage.save(tempFile);
+
+            return tempFile;
+        } catch (Exception e) {
+            Log.warn("Exception occurred in convertShoppingMallListToDocx()");
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String getShoppingMallListUpdatedXml(List<ShoppingMall> malls, String templatePath) {
+        Template template = engine.getTemplate(templatePath);
+
+        VelocityContext context = new VelocityContext();
+        context.put("malls", malls);
+
+        StringWriter writer = new StringWriter();
+        template.merge(context, writer);
+
+        return writer.toString();
     }
 }
