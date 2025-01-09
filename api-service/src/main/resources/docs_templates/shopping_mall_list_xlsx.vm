@@ -12,7 +12,7 @@
   <sheetFormatPr defaultColWidth="12" defaultRowHeight="13" outlineLevelCol="0"
                  outlineLevelRow="0" zeroHeight="false"/>
   <cols>
-    <col min="6" max="6" width="170" bestFit="3"/>
+    <col min="6" max="6" width="20" bestFit="3"/>
     <col min="3" max="3" width="15" bestFit="2"/>
   </cols>
   <sheetData>
@@ -41,7 +41,12 @@
         <v>Hobbies</v>
       </c>
     </row>
+
+      #set($rowNum = 3)
+      #set($mergeCells = [])
+
       #foreach($mall in $malls)
+          #set($startRow = $rowNum)
         <row>
           <c s="1" t="str">
             <v>${mall.id}</v>
@@ -59,9 +64,43 @@
             <v>${mall.location.lng}</v>
           </c>
           <c s="1" t="str">
-            <v>${mall.hobbies}</v>
+            <v>
+              #if($mall.hobbies.size() > 0)Id:${mall.hobbies[0].id}, Name:${mall.hobbies[0].name}#else#end
+            </v>
           </c>
         </row>
+
+          #set($rowNum = $rowNum + 1)
+          #set($index = 0)
+
+          #foreach($hobby in $mall.hobbies)
+              #set($index = $index + 1)
+              #if($index > 1)
+                <row>
+                  <c s="1"/>
+                  <c s="1"/>
+                  <c s="1"/>
+                  <c s="1"/>
+                  <c s="1"/>
+                  <c s="1" t="str">
+                    <v>Id:${hobby.id}, Name:${hobby.name}</v>
+                  </c>
+                </row>
+                  #set($rowNum = $rowNum + 1)
+              #end
+          #end
+
+          #set($endRow = $rowNum - 1)
+          #set($void = $mergeCells.add("A${startRow}:A${endRow}"))
+          #set($void = $mergeCells.add("B${startRow}:B${endRow}"))
+          #set($void = $mergeCells.add("C${startRow}:C${endRow}"))
+          #set($void = $mergeCells.add("D${startRow}:D${endRow}"))
+          #set($void = $mergeCells.add("E${startRow}:E${endRow}"))
       #end
   </sheetData>
+  <mergeCells count="${mergeCells.size()}">
+      #foreach($mergeCell in $mergeCells)
+        <mergeCell ref="$mergeCell"/>
+      #end
+  </mergeCells>
 </worksheet>
