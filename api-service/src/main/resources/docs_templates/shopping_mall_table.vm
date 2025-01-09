@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+           xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+           xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main"
+           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+           xmlns:ns10="http://schemas.microsoft.com/office/excel/2008/2/main"
+           xmlns:ns9="http://schemas.microsoft.com/office/excel/2006/main"
+           xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+           xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing"
+           xmlns:xdr14="http://schemas.microsoft.com/office/excel/2010/spreadsheetDrawing"
+           xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision">
+  <sheetFormatPr defaultColWidth="12" defaultRowHeight="13" outlineLevelCol="0"
+                 outlineLevelRow="0" zeroHeight="false"/>
+  <cols>
+    <col min="6" max="6" width="170" bestFit="3"/>
+    <col min="3" max="3" width="15" bestFit="2"/>
+  </cols>
+  <sheetData>
+    <row>
+      <c t="str">
+        <v>Shopping mall list</v>
+      </c>
+    </row>
+    <row>
+      <c s="1" t="str">
+        <v>Id</v>
+      </c>
+      <c s="1" t="str">
+        <v>Name</v>
+      </c>
+      <c s="1" t="str">
+        <v>Status</v>
+      </c>
+      <c s="1" t="str">
+        <v>Lat</v>
+      </c>
+      <c s="1" t="str">
+        <v>Lng</v>
+      </c>
+      <c s="1" t="str">
+        <v>Hobbies</v>
+      </c>
+    </row>
+      #foreach($mall in $malls)
+        <row>
+          <c s="1" t="str">
+            <v>${mall.id}</v>
+          </c>
+          <c s="1" t="str">
+            <v>${mall.name}</v>
+          </c>
+          <c s="1" t="str">
+            <v>${mall.operationalStatus}</v>
+          </c>
+          <c s="1" t="str">
+            <v>${mall.location.lat}</v>
+          </c>
+          <c s="1" t="str">
+            <v>${mall.location.lng}</v>
+          </c>
+          <c s="1" t="str">
+            <v>${mall.hobbies}</v>
+          </c>
+        </row>
+      #end
+  </sheetData>
+</worksheet>

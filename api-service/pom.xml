@@ -23,6 +23,8 @@
     <lombok.version>1.18.34</lombok.version>
     <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
     <openapi-generator-maven-plugin.version>7.10.0</openapi-generator-maven-plugin.version>
+    <docx4j-JAXB-ReferenceImpl.version>11.5.1</docx4j-JAXB-ReferenceImpl.version>
+    <velocity-engine-core.version>2.4.1</velocity-engine-core.version>
   </properties>
 
   <dependencyManagement>
@@ -115,6 +117,18 @@
       <groupId>org.openapitools</groupId>
       <artifactId>jackson-databind-nullable</artifactId>
       <version>0.2.6</version>
+    </dependency>
+
+    <!-- Office docs -->
+    <dependency>
+      <groupId>org.docx4j</groupId>
+      <artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
+      <version>${docx4j-JAXB-ReferenceImpl.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity-engine-core</artifactId>
+      <version>${velocity-engine-core.version}</version>
     </dependency>
   </dependencies>
 

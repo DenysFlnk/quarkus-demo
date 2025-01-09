@@ -15,6 +15,7 @@ import io.quarkus.cache.CacheResult;
 import io.quarkus.grpc.GrpcClient;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
+import java.io.File;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import shopping_mall.ShoppingMallProtoService;
@@ -26,6 +27,8 @@ public class ShoppingMallService {
     private final ShoppingMallMapper mallMapper;
 
     private final ShoppingMallNotificationProducer notificationProducer;
+
+    private final DocumentService documentService;
 
     @GrpcClient("shopping-mall-service")
     ShoppingMallProtoService shoppingMallProtoService;
@@ -67,5 +70,9 @@ public class ShoppingMallService {
         }
 
         return notificationProducer.buildAndPublish(alertToPersonList.getIdList(), alertToPersonList.getMessage());
+    }
+
+    public Uni<File> getShoppingMallListXlsxFile() {
+        return getAllShoppingMalls().map(documentService::convertShoppingMallListToXlsx);
     }
 }
