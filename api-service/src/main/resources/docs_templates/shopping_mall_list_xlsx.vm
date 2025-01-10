@@ -65,17 +65,15 @@
           </c>
           <c s="1" t="str">
             <v>
-              #if($mall.hobbies.size() > 0)Id:${mall.hobbies[0].id}, Name:${mall.hobbies[0].name}#else#end
+                #if($mall.hobbies.size() > 0)Id:${mall.hobbies[0].id}, Name:${mall.hobbies[0].name}#else#end
             </v>
           </c>
         </row>
 
           #set($rowNum = $rowNum + 1)
-          #set($index = 0)
 
-          #foreach($hobby in $mall.hobbies)
-              #set($index = $index + 1)
-              #if($index > 1)
+          #if($mall.hobbies.size() > 1)
+              #foreach($hobby in $mall.hobbies.subList(1, $mall.hobbies.size()))
                 <row>
                   <c s="1"/>
                   <c s="1"/>

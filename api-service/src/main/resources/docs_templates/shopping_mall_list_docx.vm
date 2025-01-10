@@ -83,17 +83,17 @@
     <w:tbl>
       <w:tblGrid>
 
-        <w:gridCol w:w="1606"/>
+        <w:gridCol w:w="636"/>
 
-        <w:gridCol w:w="1606"/>
+        <w:gridCol w:w="1800"/>
 
-        <w:gridCol w:w="1606"/>
+        <w:gridCol w:w="1800"/>
 
-        <w:gridCol w:w="1606"/>
+        <w:gridCol w:w="1600"/>
 
-        <w:gridCol w:w="1606"/>
+        <w:gridCol w:w="1600"/>
 
-        <w:gridCol w:w="1606"/>
+        <w:gridCol w:w="2200"/>
 
       </w:tblGrid>
 
@@ -144,6 +144,9 @@
         #foreach($mall in $malls)
           <w:tr>
             <w:tc>
+              <w:tcPr>
+                <w:vMerge w:val="restart"/>
+              </w:tcPr>
               <w:p>
                 <w:r>
                   <w:t>${mall.id}</w:t>
@@ -151,6 +154,9 @@
               </w:p>
             </w:tc>
             <w:tc>
+              <w:tcPr>
+                <w:vMerge w:val="restart"/>
+              </w:tcPr>
               <w:p>
                 <w:r>
                   <w:t>${mall.name}</w:t>
@@ -158,6 +164,9 @@
               </w:p>
             </w:tc>
             <w:tc>
+              <w:tcPr>
+                <w:vMerge w:val="restart"/>
+              </w:tcPr>
               <w:p>
                 <w:r>
                   <w:t>${mall.operationalStatus}</w:t>
@@ -165,6 +174,9 @@
               </w:p>
             </w:tc>
             <w:tc>
+              <w:tcPr>
+                <w:vMerge w:val="restart"/>
+              </w:tcPr>
               <w:p>
                 <w:r>
                   <w:t>${mall.location.lat}</w:t>
@@ -172,6 +184,9 @@
               </w:p>
             </w:tc>
             <w:tc>
+              <w:tcPr>
+                <w:vMerge w:val="restart"/>
+              </w:tcPr>
               <w:p>
                 <w:r>
                   <w:t>${mall.location.lng}</w:t>
@@ -181,13 +196,75 @@
             <w:tc>
               <w:p>
                 <w:r>
-                  <w:t>${mall.hobbies}</w:t>
+                  <w:t>#if($mall.hobbies.size() > 0)Id:${mall.hobbies[0].id}, Name:${mall.hobbies[0].name}#else#end</w:t>
                 </w:r>
               </w:p>
             </w:tc>
           </w:tr>
+            #if($mall.hobbies.size() > 1)
+                #foreach($hobby in $mall.hobbies.subList(1, $mall.hobbies.size()))
+                  <w:tr>
+                    <w:tc>
+                      <w:tcPr>
+                        <w:vMerge/>
+                      </w:tcPr>
+                      <w:p>
+                        <w:r>
+                          <w:t></w:t>
+                        </w:r>
+                      </w:p>
+                    </w:tc>
+                    <w:tc>
+                      <w:tcPr>
+                        <w:vMerge/>
+                      </w:tcPr>
+                      <w:p>
+                        <w:r>
+                          <w:t></w:t>
+                        </w:r>
+                      </w:p>
+                    </w:tc>
+                    <w:tc>
+                      <w:tcPr>
+                        <w:vMerge/>
+                      </w:tcPr>
+                      <w:p>
+                        <w:r>
+                          <w:t></w:t>
+                        </w:r>
+                      </w:p>
+                    </w:tc>
+                    <w:tc>
+                      <w:tcPr>
+                        <w:vMerge/>
+                      </w:tcPr>
+                      <w:p>
+                        <w:r>
+                          <w:t></w:t>
+                        </w:r>
+                      </w:p>
+                    </w:tc>
+                    <w:tc>
+                      <w:tcPr>
+                        <w:vMerge/>
+                      </w:tcPr>
+                      <w:p>
+                        <w:r>
+                          <w:t></w:t>
+                        </w:r>
+                      </w:p>
+                    </w:tc>
+                    <w:tc>
+                      <w:p>
+                        <w:r>
+                          <w:t>Id:${hobby.id}, Name:${hobby.name}</w:t>
+                        </w:r>
+                      </w:p>
+                    </w:tc>
+                  </w:tr>
+                #end
+            #end
         #end
-
     </w:tbl>
 
     <w:p>
