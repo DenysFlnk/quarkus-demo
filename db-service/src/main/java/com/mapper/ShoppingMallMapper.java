@@ -11,6 +11,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.ValueMapping;
 import org.mapstruct.ValueMappings;
+import shopping_mall.RestrictedMallIds;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
 
@@ -26,6 +27,10 @@ public interface ShoppingMallMapper {
                 .map(this::toShoppingMallObject)
                 .toList())
             .build();
+    }
+
+    default List<Integer> toIntegerList(RestrictedMallIds mallIds) {
+        return mallIds.getIdsList();
     }
 
     @ValueMappings({

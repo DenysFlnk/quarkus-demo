@@ -38,8 +38,14 @@ public class ShoppingMallService {
         return shoppingMallProtoService.getAllMalls(Empty.getDefaultInstance()).map(mallMapper::toShoppingMallList);
     }
 
+    @CacheResult(cacheName = "restrictedShoppingMallListCache")
+    public Uni<List<ShoppingMall>> getRestrictedShoppingMalls(List<Integer> restrictedIds) {
+        return shoppingMallProtoService.getMallsWithoutRestricted(mallMapper.toRestrictedMallIds(restrictedIds))
+            .map(mallMapper::toShoppingMallList);
+    }
+
     @CacheResult(cacheName = "shoppingMallCache")
-    public Uni<ShoppingMall> getShoppingMallById(@CacheKey Integer id) {
+    public Uni<ShoppingMall> getShoppingMallById(Integer id) {
         return shoppingMallProtoService.getMall(Int32Value.of(id)).map(mallMapper::toShoppingMall);
     }
 
@@ -51,6 +57,7 @@ public class ShoppingMallService {
 
     @CacheInvalidate(cacheName = "shoppingMallCache")
     @CacheInvalidateAll(cacheName = "shoppingMallListCache")
+    @CacheInvalidateAll(cacheName = "restrictedShoppingMallListCache")
     public Uni<Void> updateShoppingMall(@CacheKey Integer id, ShoppingMallUpdateRequest shoppingMall) {
         return shoppingMallProtoService.getMall(Int32Value.of(id))
             .flatMap(mall ->
@@ -60,7 +67,8 @@ public class ShoppingMallService {
 
     @CacheInvalidate(cacheName = "shoppingMallCache")
     @CacheInvalidateAll(cacheName = "shoppingMallListCache")
-    public Uni<Void> deleteShoppingMall(@CacheKey Integer id) {
+    @CacheInvalidateAll(cacheName = "restrictedShoppingMallListCache")
+    public Uni<Void> deleteShoppingMall(Integer id) {
         return shoppingMallProtoService.deleteMall(Int32Value.of(id)).replaceWithVoid();
     }
 

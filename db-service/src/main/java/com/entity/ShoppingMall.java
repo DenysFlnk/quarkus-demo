@@ -2,6 +2,7 @@ package com.entity;
 
 import com.vividsolutions.jts.geom.Point;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
+import io.smallrye.mutiny.Uni;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,4 +49,8 @@ public class ShoppingMall extends PanacheEntityBase {
         inverseJoinColumns = @JoinColumn(name = "hobby_id")
     )
     private List<Hobby> hobbies;
+
+    public static Uni<List<ShoppingMall>> findAllExcept(List<Integer> ids) {
+        return ShoppingMall.list("SELECT s FROM ShoppingMall s WHERE s.id NOT IN(?1)", ids);
+    }
 }

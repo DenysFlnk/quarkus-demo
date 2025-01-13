@@ -5,6 +5,7 @@ import com.quarkus.model.AlertToPersonList;
 import com.quarkus.model.ShoppingMall;
 import com.quarkus.model.ShoppingMallCreateRequest;
 import com.quarkus.model.ShoppingMallUpdateRequest;
+import com.service.MallRestrictionService;
 import com.service.ShoppingMallService;
 import io.quarkus.security.Authenticated;
 import io.smallrye.mutiny.Uni;
@@ -18,13 +19,26 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
     @Inject
     ShoppingMallService shoppingMallService;
 
+    @Inject
+    MallRestrictionService restrictionService;
+
     @Override
     public Uni<List<ShoppingMall>> getAllShoppingMalls() {
-        return shoppingMallService.getAllShoppingMalls();
+        List<Integer> restrictedMalls = restrictionService.getRestrictedMalls();
+
+        if (restrictedMalls.isEmpty()) {
+            return shoppingMallService.getAllShoppingMalls();
+        } else {
+            return shoppingMallService.getRestrictedShoppingMalls(restrictedMalls);
+        }
     }
 
     @Override
     public Uni<ShoppingMall> getShoppingMall(Integer id) {
+        if (restrictionService.isRestrictedMall(id)) {
+            throw new SecurityException("Shopping mall is restricted");
+        }
+
         return shoppingMallService.getShoppingMallById(id);
     }
 
@@ -35,11 +49,19 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
 
     @Override
     public Uni<Void> deleteShoppingMall(Integer id) {
+        if (restrictionService.isRestrictedMall(id)) {
+            throw new SecurityException("Shopping mall is restricted");
+        }
+
         return shoppingMallService.deleteShoppingMall(id);
     }
 
     @Override
     public Uni<Void> updateShoppingMall(Integer id, ShoppingMallUpdateRequest shoppingMallUpdateRequest) {
+        if (restrictionService.isRestrictedMall(id)) {
+            throw new SecurityException("Shopping mall is restricted");
+        }
+
         return shoppingMallService.updateShoppingMall(id, shoppingMallUpdateRequest);
     }
 

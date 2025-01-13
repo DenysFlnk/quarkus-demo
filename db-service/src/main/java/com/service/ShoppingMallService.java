@@ -9,6 +9,7 @@ import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.smallrye.mutiny.Uni;
 import lombok.RequiredArgsConstructor;
+import shopping_mall.RestrictedMallIds;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
 import shopping_mall.ShoppingMallProtoService;
@@ -23,6 +24,11 @@ public class ShoppingMallService implements ShoppingMallProtoService {
     @Override
     public Uni<ShoppingMallList> getAllMalls(Empty request) {
         return ShoppingMall.<ShoppingMall>listAll().map(mallMapper::toShoppingMallList);
+    }
+
+    @Override
+    public Uni<ShoppingMallList> getMallsWithoutRestricted(RestrictedMallIds request) {
+        return ShoppingMall.findAllExcept(mallMapper.toIntegerList(request)).map(mallMapper::toShoppingMallList);
     }
 
     @Override

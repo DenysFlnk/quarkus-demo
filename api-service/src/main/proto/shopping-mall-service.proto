@@ -12,6 +12,7 @@ package shopping_mall;
 service ShoppingMallProtoService {
 
   rpc GetAllMalls(google.protobuf.Empty) returns (ShoppingMallList) {}
+  rpc GetMallsWithoutRestricted(RestrictedMallIds) returns (ShoppingMallList) {}
   rpc GetMall(google.protobuf.Int32Value) returns (ShoppingMallObject) {}
   rpc CreateMall(ShoppingMallObject) returns (ShoppingMallObject) {}
   rpc UpdateMall(ShoppingMallObject) returns (google.protobuf.Empty) {}
@@ -41,4 +42,8 @@ enum OperationalStatus {
 
 message ShoppingMallList {
   repeated ShoppingMallObject malls = 1;
+}
+
+message RestrictedMallIds {
+  repeated int32 ids = 1;
 }

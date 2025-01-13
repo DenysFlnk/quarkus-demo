@@ -15,6 +15,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.ValueMapping;
 import org.mapstruct.ValueMappings;
 import shopping_mall.OperationalStatus;
+import shopping_mall.RestrictedMallIds;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
 
@@ -35,6 +36,12 @@ public interface ShoppingMallMapper {
         ShoppingMallObject.Builder builder = mall.toBuilder();
         updateShoppingMall(builder, request);
         return builder.build();
+    }
+
+    default RestrictedMallIds toRestrictedMallIds(List<Integer> restrictedMallIds) {
+        return RestrictedMallIds.newBuilder()
+            .addAllIds(restrictedMallIds)
+            .build();
     }
 
     @AfterMapping
