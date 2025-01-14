@@ -50,26 +50,26 @@ public class ShoppingMallService {
     }
 
     @CacheInvalidateAll(cacheName = "shoppingMallListCache")
-    public Uni<ShoppingMall> createShoppingMall(ShoppingMallCreateRequest shoppingMall) {
-        return shoppingMallProtoService.createMall(mallMapper.toShoppingMallObject(shoppingMall))
+    public Uni<ShoppingMall> createShoppingMall(ShoppingMallCreateRequest shoppingMall, String author) {
+        return shoppingMallProtoService.createMall(mallMapper.toShoppingMallObject(shoppingMall, author))
             .map(mallMapper::toShoppingMall);
     }
 
     @CacheInvalidate(cacheName = "shoppingMallCache")
     @CacheInvalidateAll(cacheName = "shoppingMallListCache")
     @CacheInvalidateAll(cacheName = "restrictedShoppingMallListCache")
-    public Uni<Void> updateShoppingMall(@CacheKey Integer id, ShoppingMallUpdateRequest shoppingMall) {
+    public Uni<Void> updateShoppingMall(@CacheKey Integer id, ShoppingMallUpdateRequest shoppingMall, String author) {
         return shoppingMallProtoService.getMall(Int32Value.of(id))
             .flatMap(mall ->
-                shoppingMallProtoService.updateMall(mallMapper.updateAndBuildShoppingMall(mall, shoppingMall)))
+                shoppingMallProtoService.updateMall(mallMapper.updateAndBuildShoppingMall(mall, shoppingMall, author)))
             .replaceWithVoid();
     }
 
     @CacheInvalidate(cacheName = "shoppingMallCache")
     @CacheInvalidateAll(cacheName = "shoppingMallListCache")
     @CacheInvalidateAll(cacheName = "restrictedShoppingMallListCache")
-    public Uni<Void> deleteShoppingMall(Integer id) {
-        return shoppingMallProtoService.deleteMall(Int32Value.of(id)).replaceWithVoid();
+    public Uni<Void> deleteShoppingMall(@CacheKey Integer id, String author) {
+        return shoppingMallProtoService.deleteMall(mallMapper.toDeleteMallRequest(id, author)).replaceWithVoid();
     }
 
     public Uni<Void> sendAlertToPersonList(AlertToPersonList alertToPersonList) {

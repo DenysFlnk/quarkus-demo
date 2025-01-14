@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+  <changeSet id="9" author="dfilonenko">
+    <addColumn tableName="shopping_mall">
+      <column name="author" type="varchar" defaultValue="liquibase">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="shopping_mall">
+      <column name="created_at" type="timestamp" defaultValueComputed="now()"/>
+    </addColumn>
+    <addColumn tableName="shopping_mall">
+      <column name="modified_at" type="timestamp" defaultValueComputed="now()"/>
+    </addColumn>
+    <createTable tableName="shopping_mall_audit">
+      <column name="id" type="int" autoIncrement="true" incrementBy="1" startWith="1"/>
+      <column name="shopping_mall_id" type="int"/>
+      <column name="name" type="varchar"/>
+      <column name="location" type="geography(Point, 4326)"/>
+      <column name="author" type="varchar"/>
+      <column name="created_at" type="timestamp"/>
+      <column name="modified_at" type="timestamp"/>
+    </createTable>
+
+    <addColumn tableName="shopping_mall_hobby">
+      <column name="author" type="varchar" defaultValue="liquibase">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="shopping_mall_hobby">
+      <column name="created_at" type="timestamp" defaultValueComputed="now()"/>
+    </addColumn>
+    <createTable tableName="shopping_mall_hobby_audit">
+      <column name="id" type="int" autoIncrement="true" incrementBy="1" startWith="1"/>
+      <column name="shopping_mall_id" type="int"/>
+      <column name="hobby_id" type="int"/>
+      <column name="author" type="varchar"/>
+      <column name="created_at" type="timestamp"/>
+      <column name="modified_at" type="timestamp"/>
+    </createTable>
+
+    <sql dbms="postgresql">
+      CREATE
+      OR REPLACE FUNCTION mall_insert_update_trigger_fnc()
+      RETURNS TRIGGER
+      LANGUAGE PLPGSQL AS
+        $$
+        BEGIN
+        NEW.modified_at := now();
+        INSERT INTO shopping_mall_audit(shopping_mall_id, name, location, author, created_at,modified_at)
+        VALUES (NEW.id, NEW.name, NEW.location, NEW.author, NEW.created_at, NEW.modified_at);
+        RETURN NEW;
+        END $$
+    </sql>
+    <sql dbms="postgresql">
+      CREATE TRIGGER mall_insert_update_trigger
+      BEFORE INSERT OR UPDATE ON shopping_mall
+      FOR EACH ROW
+      EXECUTE FUNCTION mall_insert_update_trigger_fnc();
+    </sql>
+  </changeSet>
+</databaseChangeLog>

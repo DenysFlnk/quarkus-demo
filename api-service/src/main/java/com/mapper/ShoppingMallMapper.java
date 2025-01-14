@@ -14,6 +14,7 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ValueMapping;
 import org.mapstruct.ValueMappings;
+import shopping_mall.DeleteMallRequest;
 import shopping_mall.OperationalStatus;
 import shopping_mall.RestrictedMallIds;
 import shopping_mall.ShoppingMallList;
@@ -32,9 +33,10 @@ public interface ShoppingMallMapper {
             .toList();
     }
 
-    default ShoppingMallObject updateAndBuildShoppingMall(ShoppingMallObject mall, ShoppingMallUpdateRequest request) {
+    default ShoppingMallObject updateAndBuildShoppingMall(ShoppingMallObject mall, ShoppingMallUpdateRequest request,
+                                                          String author) {
         ShoppingMallObject.Builder builder = mall.toBuilder();
-        updateShoppingMall(builder, request);
+        updateShoppingMall(builder, request, author);
         return builder.build();
     }
 
@@ -94,14 +96,24 @@ public interface ShoppingMallMapper {
     @Mapping(target = "operationalStatus", source = "status")
     ShoppingMall toShoppingMall(ShoppingMallObject shoppingMallObject);
 
-    @Mapping(target = "location", source = "location")
-    @Mapping(target = "hobbiesList", source = "hobbies")
-    @Mapping(target = "status", source = "operationalStatus")
-    ShoppingMallObject toShoppingMallObject(ShoppingMallCreateRequest shoppingMall);
+    @Mapping(target = "name", source = "shoppingMall.name")
+    @Mapping(target = "location", source = "shoppingMall.location")
+    @Mapping(target = "hobbiesList", source = "shoppingMall.hobbies")
+    @Mapping(target = "status", source = "shoppingMall.operationalStatus")
+    @Mapping(target = "author", source = "author")
+    ShoppingMallObject toShoppingMallObject(ShoppingMallCreateRequest shoppingMall, String author);
 
     ShoppingMallUpdateRequest toShoppingMallUpdateRequest(ShoppingMallUpdateRequestDto dto);
 
+    @Mapping(target = "name", source = "request.name")
     @Mapping(target = "location", ignore = true)
     @Mapping(target = "hobbiesList", ignore = true)
-    void updateShoppingMall(@MappingTarget ShoppingMallObject.Builder mall, ShoppingMallUpdateRequest request);
+    @Mapping(target = "status", source = "request.status")
+    @Mapping(target = "author", source = "author")
+    void updateShoppingMall(@MappingTarget ShoppingMallObject.Builder mall, ShoppingMallUpdateRequest request,
+                            String author);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "author", source = "author")
+    DeleteMallRequest toDeleteMallRequest(Integer id, String author);
 }

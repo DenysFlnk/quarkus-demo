@@ -15,7 +15,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.List;
 import lombok.Getter;
@@ -49,6 +48,9 @@ public class ShoppingMall extends PanacheEntityBase {
         inverseJoinColumns = @JoinColumn(name = "hobby_id")
     )
     private List<Hobby> hobbies;
+
+    @Column(name = "author")
+    private String author;
 
     public static Uni<List<ShoppingMall>> findAllExcept(List<Integer> ids) {
         return ShoppingMall.list("SELECT s FROM ShoppingMall s WHERE s.id NOT IN(?1)", ids);

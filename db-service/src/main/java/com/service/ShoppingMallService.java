@@ -9,6 +9,7 @@ import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.smallrye.mutiny.Uni;
 import lombok.RequiredArgsConstructor;
+import shopping_mall.DeleteMallRequest;
 import shopping_mall.RestrictedMallIds;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
@@ -57,8 +58,17 @@ public class ShoppingMallService implements ShoppingMallProtoService {
     }
 
     @Override
-    public Uni<Empty> deleteMall(Int32Value request) {
-        return Panache.withTransaction(() -> ShoppingMall.deleteById(request.getValue()))
+    public Uni<Empty> deleteMall(DeleteMallRequest request) {
+        return Panache.withTransaction(() ->
+                ShoppingMall.<ShoppingMall>findById(request.getId())
+                    .onItem()
+                    .ifNull()
+                    .failWith(() -> new IllegalArgumentException("Invalid mall id: " + request.getId()))
+                    .flatMap(mall -> {
+                        mall.setAuthor(request.getAuthor());
+                        return mall.persistAndFlush()
+                            .flatMap(ignored -> ShoppingMall.deleteById(request.getId()));
+                    }))
             .replaceWith(Empty.getDefaultInstance());
     }
 }

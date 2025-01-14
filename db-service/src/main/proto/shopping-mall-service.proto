@@ -16,7 +16,7 @@ service ShoppingMallProtoService {
   rpc GetMall(google.protobuf.Int32Value) returns (ShoppingMallObject) {}
   rpc CreateMall(ShoppingMallObject) returns (ShoppingMallObject) {}
   rpc UpdateMall(ShoppingMallObject) returns (google.protobuf.Empty) {}
-  rpc DeleteMall(google.protobuf.Int32Value) returns (google.protobuf.Empty) {}
+  rpc DeleteMall(DeleteMallRequest) returns (google.protobuf.Empty) {}
 }
 
 message ShoppingMallObject {
@@ -25,6 +25,7 @@ message ShoppingMallObject {
   Location location = 3;
   repeated hobby.HobbyObject hobbies = 4;
   OperationalStatus status = 5;
+  string author = 6;
 }
 
 message Location {
@@ -46,4 +47,9 @@ message ShoppingMallList {
 
 message RestrictedMallIds {
   repeated int32 ids = 1;
+}
+
+message DeleteMallRequest {
+  int32 id = 1;
+  string author = 2;
 }

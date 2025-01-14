@@ -44,7 +44,7 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
 
     @Override
     public Uni<ShoppingMall> createShoppingMall(ShoppingMallCreateRequest shoppingMallCreateRequest) {
-        return shoppingMallService.createShoppingMall(shoppingMallCreateRequest);
+        return shoppingMallService.createShoppingMall(shoppingMallCreateRequest, restrictionService.getRequestAuthor());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
             throw new SecurityException("Shopping mall is restricted");
         }
 
-        return shoppingMallService.deleteShoppingMall(id);
+        return shoppingMallService.deleteShoppingMall(id, restrictionService.getRequestAuthor());
     }
 
     @Override
@@ -62,7 +62,8 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
             throw new SecurityException("Shopping mall is restricted");
         }
 
-        return shoppingMallService.updateShoppingMall(id, shoppingMallUpdateRequest);
+        return shoppingMallService.updateShoppingMall(id, shoppingMallUpdateRequest,
+            restrictionService.getRequestAuthor());
     }
 
     @Override

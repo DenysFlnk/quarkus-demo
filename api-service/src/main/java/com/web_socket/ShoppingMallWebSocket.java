@@ -42,16 +42,18 @@ public class ShoppingMallWebSocket {
                     .map(mallList -> new WebSocketMessage(Type.GET_LIST, mallList));
             }
             case CREATE -> {
-                return shoppingMallService.createShoppingMall(message.getMessageAs(ShoppingMallCreateRequest.class))
+                return shoppingMallService.createShoppingMall(message.getMessageAs(ShoppingMallCreateRequest.class),
+                        connection.id())
                     .map(mall -> new WebSocketMessage(Type.CREATE, mall));
             }
             case UPDATE -> {
                 ShoppingMallUpdateRequestDto dto = message.getMessageAs(ShoppingMallUpdateRequestDto.class);
-                return shoppingMallService.updateShoppingMall(dto.getId(), mallMapper.toShoppingMallUpdateRequest(dto))
+                return shoppingMallService.updateShoppingMall(dto.getId(), mallMapper.toShoppingMallUpdateRequest(dto),
+                        connection.id())
                     .map(empty -> new WebSocketMessage(Type.UPDATE, "Shopping mall updated."));
             }
             case DELETE -> {
-                return shoppingMallService.deleteShoppingMall(message.getMessageAs(Integer.class))
+                return shoppingMallService.deleteShoppingMall(message.getMessageAs(Integer.class), connection.id())
                     .map(empty -> new WebSocketMessage(Type.DELETE, "Shopping mall deleted."));
             }
             default -> {
