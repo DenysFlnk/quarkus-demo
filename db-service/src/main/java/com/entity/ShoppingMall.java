@@ -12,9 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
 import lombok.Getter;
@@ -41,13 +39,8 @@ public class ShoppingMall extends PanacheEntityBase {
     @Enumerated(EnumType.STRING)
     private OperationalStatus operationalStatus;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "shopping_mall_hobby",
-        joinColumns = @JoinColumn(name = "shopping_mall_id"),
-        inverseJoinColumns = @JoinColumn(name = "hobby_id")
-    )
-    private List<Hobby> hobbies;
+    @OneToMany(mappedBy = "shoppingMall", fetch = FetchType.EAGER)
+    private List<ShoppingMallHobby> hobbies;
 
     @Column(name = "author")
     private String author;

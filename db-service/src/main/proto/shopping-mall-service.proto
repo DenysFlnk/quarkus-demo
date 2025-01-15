@@ -6,6 +6,7 @@ option java_package = "shopping_mall";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/empty.proto";
 import "hobby-service.proto";
+import "shopping-mall-hobby-service.proto";
 
 package shopping_mall;
 
@@ -23,7 +24,7 @@ message ShoppingMallObject {
   int32 id = 1;
   string name = 2;
   Location location = 3;
-  repeated hobby.HobbyObject hobbies = 4;
+  repeated shopping_mall_hobby.ShoppingMallHobby hobbies = 4;
   OperationalStatus status = 5;
   string author = 6;
 }

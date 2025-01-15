@@ -2,6 +2,7 @@ package com.mapper;
 
 import com.entity.OperationalStatus;
 import com.entity.ShoppingMall;
+import com.entity.ShoppingMallHobby;
 import java.util.List;
 import org.mapstruct.CollectionMappingStrategy;
 import org.mapstruct.Mapper;
@@ -14,6 +15,7 @@ import org.mapstruct.ValueMappings;
 import shopping_mall.RestrictedMallIds;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
+import shopping_mall_hobby.ShoppingMallHobbyCreateRequest;
 
 @Mapper(
     uses = BaseProtoMapper.class,
@@ -61,7 +63,9 @@ public interface ShoppingMallMapper {
     @Mapping(target = "operationalStatus", source = "status")
     ShoppingMall toShoppingMall(ShoppingMallObject shoppingMallObject);
 
-    @Mapping(target = "hobbies", source = "hobbiesList")
     @Mapping(target = "operationalStatus", source = "status")
     void updateShoppingMall(@MappingTarget ShoppingMall mall, ShoppingMallObject shoppingMallObject);
+
+    @Mapping(target = "id", ignore = true)
+    ShoppingMallHobby toShoppingMallHobby(ShoppingMallHobbyCreateRequest request);
 }

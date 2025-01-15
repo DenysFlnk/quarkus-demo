@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "shopping_mall_hobby";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+import "hobby-service.proto";
+
+package shopping_mall_hobby;
+
+service ShoppingMallHobbyProtoService {
+
+  rpc AddHobby(ShoppingMallHobbyCreateRequest) returns (google.protobuf.Empty) {}
+  rpc DeleteHobby(ShoppingMallHobbyDeleteRequest) returns (google.protobuf.Empty) {}
+}
+
+message ShoppingMallHobby {
+  int32 id = 1;
+  hobby.HobbyObject hobby = 2;
+}
+
+message ShoppingMallHobbyCreateRequest {
+  int32 mallId = 1;
+  hobby.HobbyObject hobby = 2;
+  string author = 3;
+}
+
+message ShoppingMallHobbyDeleteRequest {
+  int32 shoppingMallHobbyId = 1;
+  string author = 3;
+}

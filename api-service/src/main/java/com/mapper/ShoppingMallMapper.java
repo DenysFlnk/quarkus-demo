@@ -19,6 +19,8 @@ import shopping_mall.OperationalStatus;
 import shopping_mall.RestrictedMallIds;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
+import shopping_mall_hobby.ShoppingMallHobbyCreateRequest;
+import shopping_mall_hobby.ShoppingMallHobbyDeleteRequest;
 
 @Mapper(
     uses = {JsonNullableMapper.class, LocationMapper.class, HobbyMapper.class},
@@ -44,21 +46,6 @@ public interface ShoppingMallMapper {
         return RestrictedMallIds.newBuilder()
             .addAllIds(restrictedMallIds)
             .build();
-    }
-
-    @AfterMapping
-    default void setHobbies(@MappingTarget ShoppingMallObject.Builder mall, ShoppingMallUpdateRequest request) {
-        final var jsonNullableMapper = JsonNullableMapper.INSTANCE;
-        final var hobbyMapper = HobbyMapper.INSTANCE;
-
-        if (jsonNullableMapper.isNotEmpty(request.getHobbies())) {
-            List<Hobby> hobbies = request.getHobbies().get();
-            mall.addAllHobbies(hobbies.stream()
-                .map(hobbyMapper::toHobbyObject)
-                .toList());
-        } else if (request.getHobbies() == null) {
-            mall.clearHobbies();
-        }
     }
 
     @AfterMapping
@@ -98,7 +85,6 @@ public interface ShoppingMallMapper {
 
     @Mapping(target = "name", source = "shoppingMall.name")
     @Mapping(target = "location", source = "shoppingMall.location")
-    @Mapping(target = "hobbiesList", source = "shoppingMall.hobbies")
     @Mapping(target = "status", source = "shoppingMall.operationalStatus")
     @Mapping(target = "author", source = "author")
     ShoppingMallObject toShoppingMallObject(ShoppingMallCreateRequest shoppingMall, String author);
@@ -116,4 +102,8 @@ public interface ShoppingMallMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "author", source = "author")
     DeleteMallRequest toDeleteMallRequest(Integer id, String author);
+
+    ShoppingMallHobbyCreateRequest toShoppingMallHobbyCreateRequest(Integer mallId, Hobby hobby, String author);
+
+    ShoppingMallHobbyDeleteRequest toShoppingMallHobbyDeleteRequest(Integer shoppingMallHobbyId, String author);
 }

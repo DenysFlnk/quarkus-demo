@@ -413,6 +413,47 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
+  '/quarkus-demo-api/shopping-malls/{id}/hobbies':
+    post:
+      tags:
+        - shopping-mall-hobby-controller
+      summary: Add Hobby to ShoppingMall
+      operationId: add-hobby-to-shopping-mall
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hobby'
+      responses:
+        '200':
+          description: OK
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+  '/quarkus-demo-api/shopping-malls/hobbies/{shoppingMallHobbyId}':
+    delete:
+      tags:
+        - shopping-mall-hobby-controller
+      summary: Remove ShoppingMallHobby
+      operationId: delete-shopping-mall-hobby
+      parameters:
+        - name: shoppingMallHobbyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
 components:
   schemas:
     Person:
@@ -487,7 +528,7 @@ components:
         hobbies:
           type: array
           items:
-            $ref: '#/components/schemas/Hobby'
+            $ref: '#/components/schemas/ShoppingMallHobby'
         location:
           $ref: '#/components/schemas/Location'
         operationalStatus:
@@ -496,6 +537,14 @@ components:
         - id
         - name
         - location
+    ShoppingMallHobby:
+      type: object
+      title: ShoppingMallHobby
+      properties:
+        id:
+          type: integer
+        hobby:
+          $ref: '#/components/schemas/Hobby'
     Location:
       type: object
       title: Location
@@ -521,10 +570,6 @@ components:
       properties:
         name:
           type: string
-        hobbies:
-          type: array
-          items:
-            $ref: '#/components/schemas/Hobby'
         location:
           $ref: '#/components/schemas/Location'
         operationalStatus:
@@ -544,11 +589,6 @@ components:
           oneOf:
             - $ref: '#/components/schemas/Location'
             - nullable: true
-        hobbies:
-          type: array
-          nullable: true
-          items:
-            $ref: '#/components/schemas/Hobby'
       required:
         - name
         - status
