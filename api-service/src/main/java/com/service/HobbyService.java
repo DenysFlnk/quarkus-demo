@@ -2,7 +2,6 @@ package com.service;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Int32Value;
-import com.google.protobuf.StringValue;
 import com.mapper.HobbyMapper;
 import com.quarkus.model.Hobby;
 import com.quarkus.model.HobbyCreateRequest;
@@ -38,19 +37,20 @@ public class HobbyService {
 
     @CacheInvalidate(cacheName = "hobbyCache")
     @CacheInvalidateAll(cacheName = "hobbyListCache")
-    public Uni<Void> updateHobby(@CacheKey Integer id, Hobby hobby) {
+    public Uni<Void> updateHobby(@CacheKey Integer id, Hobby hobby, String author) {
         hobby.setId(id);
-        return hobbyProtoService.updateHobby(hobbyMapper.toHobbyObject(hobby)).replaceWithVoid();
+        return hobbyProtoService.updateHobby(hobbyMapper.toHobbyObject(id, hobby, author)).replaceWithVoid();
     }
 
     @CacheInvalidateAll(cacheName = "hobbyListCache")
-    public Uni<Hobby> createHobby(HobbyCreateRequest createRequest) {
-        return hobbyProtoService.createHobby(StringValue.of(createRequest.getName())).map(hobbyMapper::toHobby);
+    public Uni<Hobby> createHobby(HobbyCreateRequest createRequest, String author) {
+        return hobbyProtoService.createHobby(hobbyMapper.toHobbyCreateRequest(createRequest, author))
+            .map(hobbyMapper::toHobby);
     }
 
     @CacheInvalidate(cacheName = "hobbyCache")
     @CacheInvalidateAll(cacheName = "hobbyListCache")
-    public Uni<Void> deleteHobby(@CacheKey Integer id) {
-        return hobbyProtoService.deleteHobby(Int32Value.of(id)).replaceWithVoid();
+    public Uni<Void> deleteHobby(@CacheKey Integer id, String author) {
+        return hobbyProtoService.deleteHobby(hobbyMapper.toHobbyDeleteRequest(id, author)).replaceWithVoid();
     }
 }

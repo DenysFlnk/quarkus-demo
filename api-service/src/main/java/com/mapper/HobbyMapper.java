@@ -1,17 +1,17 @@
 package com.mapper;
 
 import com.quarkus.model.Hobby;
+import hobby.HobbyCreateRequest;
+import hobby.HobbyDeleteRequest;
 import hobby.HobbyList;
 import hobby.HobbyObject;
 import java.util.List;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA_CDI)
 public interface HobbyMapper {
-
-    HobbyMapper INSTANCE = Mappers.getMapper(HobbyMapper.class);
 
     default List<Hobby> toHobbyList(HobbyList hobbyList) {
         return hobbyList.getHobbiesList().stream()
@@ -21,5 +21,11 @@ public interface HobbyMapper {
 
     Hobby toHobby(HobbyObject hobbyObject);
 
-    HobbyObject toHobbyObject(Hobby hobby);
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "author", source = "author")
+    HobbyObject toHobbyObject(Integer id, Hobby hobby, String author);
+
+    HobbyCreateRequest toHobbyCreateRequest(com.quarkus.model.HobbyCreateRequest request, String author);
+
+    HobbyDeleteRequest toHobbyDeleteRequest(Integer id, String author);
 }

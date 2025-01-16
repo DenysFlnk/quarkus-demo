@@ -12,16 +12,27 @@ service HobbyProtoService {
 
   rpc GetHobby(google.protobuf.Int32Value) returns (HobbyObject) {}
   rpc GetAllHobbies(google.protobuf.Empty) returns (HobbyList) {}
-  rpc CreateHobby(google.protobuf.StringValue) returns (HobbyObject) {}
+  rpc CreateHobby(HobbyCreateRequest) returns (HobbyObject) {}
   rpc UpdateHobby(HobbyObject) returns (google.protobuf.Empty) {}
-  rpc DeleteHobby(google.protobuf.Int32Value) returns (google.protobuf.Empty) {}
+  rpc DeleteHobby(HobbyDeleteRequest) returns (google.protobuf.Empty) {}
 }
 
 message HobbyObject {
   int32 id = 1;
   string name = 2;
+  string author = 3;
 }
 
 message HobbyList {
   repeated HobbyObject hobbies = 1;
+}
+
+message HobbyCreateRequest {
+  string name = 1;
+  string author = 2;
+}
+
+message HobbyDeleteRequest {
+  int32 id = 1;
+  string author = 2;
 }

@@ -2,6 +2,7 @@ package com.mapper;
 
 import com.entity.Hobby;
 import com.google.protobuf.StringValue;
+import hobby.HobbyCreateRequest;
 import hobby.HobbyList;
 import hobby.HobbyObject;
 import java.util.List;
@@ -22,8 +23,7 @@ public interface HobbyMapper {
     }
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "name", expression = "java(name.getValue())")
-    Hobby toHobby(StringValue name);
+    Hobby toHobby(HobbyCreateRequest request);
 
     HobbyObject toHobbyObject(Hobby hobby);
 

@@ -5,6 +5,8 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.StringValue;
 import com.mapper.HobbyMapper;
+import hobby.HobbyCreateRequest;
+import hobby.HobbyDeleteRequest;
 import hobby.HobbyList;
 import hobby.HobbyObject;
 import hobby.HobbyProtoService;
@@ -36,7 +38,7 @@ public class HobbyService implements HobbyProtoService {
     }
 
     @Override
-    public Uni<HobbyObject> createHobby(StringValue request) {
+    public Uni<HobbyObject> createHobby(HobbyCreateRequest request) {
         return Panache.withTransaction(hobbyMapper.toHobby(request)::<Hobby>persist).map(hobbyMapper::toHobbyObject);
     }
 
@@ -51,8 +53,16 @@ public class HobbyService implements HobbyProtoService {
     }
 
     @Override
-    public Uni<Empty> deleteHobby(Int32Value request) {
-        return Panache.withTransaction(() -> Hobby.deleteById(request.getValue()))
+    public Uni<Empty> deleteHobby(HobbyDeleteRequest request) {
+        return Panache.withTransaction(() -> Hobby.<Hobby>findById(request.getId())
+                .onItem()
+                .ifNull()
+                .failWith(() -> new IllegalArgumentException("Invalid hobby id: " + request.getId()))
+                .flatMap(hobby -> {
+                    hobby.setAuthor(request.getAuthor());
+                    return hobby.persistAndFlush()
+                        .flatMap(ignored -> Hobby.deleteById(hobby.getId()));
+                }))
             .replaceWith(Empty.getDefaultInstance());
     }
 }

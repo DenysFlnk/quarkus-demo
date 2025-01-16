@@ -22,4 +22,7 @@ public class Hobby extends PanacheEntityBase {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "author")
+    String author;
 }
