@@ -196,7 +196,7 @@
             <w:tc>
               <w:p>
                 <w:r>
-                  <w:t>#if($mall.hobbies.size() > 0)Id:${mall.hobbies[0].id}, Name:${mall.hobbies[0].name}#else#end</w:t>
+                  <w:t>#if($mall.hobbies.size() > 0)Id:${mall.hobbies[0].hobby.id}, Name:${mall.hobbies[0].hobby.name}#else#end</w:t>
                 </w:r>
               </w:p>
             </w:tc>
@@ -257,7 +257,7 @@
                     <w:tc>
                       <w:p>
                         <w:r>
-                          <w:t>Id:${hobby.id}, Name:${hobby.name}</w:t>
+                          <w:t>Id:${hobby.hobby.id}, Name:${hobby.hobby.name}</w:t>
                         </w:r>
                       </w:p>
                     </w:tc>

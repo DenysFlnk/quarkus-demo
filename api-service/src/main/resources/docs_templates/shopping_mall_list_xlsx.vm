@@ -65,7 +65,7 @@
           </c>
           <c s="1" t="str">
             <v>
-                #if($mall.hobbies.size() > 0)Id:${mall.hobbies[0].id}, Name:${mall.hobbies[0].name}#else#end
+                #if($mall.hobbies.size() > 0)Id:${mall.hobbies[0].hobby.id}, Name:${mall.hobbies[0].hobby.name}#else#end
             </v>
           </c>
         </row>
@@ -81,7 +81,7 @@
                   <c s="1"/>
                   <c s="1"/>
                   <c s="1" t="str">
-                    <v>Id:${hobby.id}, Name:${hobby.name}</v>
+                    <v>Id:${hobby.hobby.id}, Name:${hobby.hobby.name}</v>
                   </c>
                 </row>
                   #set($rowNum = $rowNum + 1)
