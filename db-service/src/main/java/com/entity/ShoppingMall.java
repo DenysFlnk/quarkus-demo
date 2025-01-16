@@ -39,13 +39,22 @@ public class ShoppingMall extends PanacheEntityBase {
     @Enumerated(EnumType.STRING)
     private OperationalStatus operationalStatus;
 
-    @OneToMany(mappedBy = "shoppingMall", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "shoppingMall", fetch = FetchType.LAZY)
     private List<ShoppingMallHobby> hobbies;
 
     @Column(name = "author")
     private String author;
 
     public static Uni<List<ShoppingMall>> findAllExcept(List<Integer> ids) {
-        return ShoppingMall.list("SELECT s FROM ShoppingMall s WHERE s.id NOT IN(?1)", ids);
+        return ShoppingMall.list("SELECT s FROM ShoppingMall s JOIN FETCH s.hobbies WHERE s.id NOT IN(?1)", ids);
+    }
+
+    public static Uni<List<ShoppingMall>> findAllFetchHobbies() {
+        return ShoppingMall.list("SELECT s FROM ShoppingMall s JOIN FETCH s.hobbies");
+    }
+
+    public static Uni<ShoppingMall> findByIdFetchHobby(Integer id) {
+        return ShoppingMall.find("SELECT s FROM ShoppingMall s JOIN FETCH s.hobbies WHERE s.id = ?1", id)
+            .firstResult();
     }
 }

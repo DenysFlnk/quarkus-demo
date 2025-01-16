@@ -96,4 +96,93 @@
       EXECUTE FUNCTION mall_hobby_insert_update_trigger_fnc();
     </sql>
   </changeSet>
+
+  <changeSet id="11" author="dfilonenko">
+    <addColumn tableName="person">
+      <column name="author" type="varchar" defaultValue="liquibase">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="person">
+      <column name="created_at" type="timestamp" defaultValueComputed="now()"/>
+    </addColumn>
+    <addColumn tableName="person">
+      <column name="modified_at" type="timestamp" defaultValueComputed="now()"/>
+    </addColumn>
+    <createTable tableName="person_audit">
+      <column name="id" type="int" autoIncrement="true" incrementBy="1" startWith="1"/>
+      <column name="person_id" type="uuid"/>
+      <column name="first_name" type="varchar"/>
+      <column name="last_name" type="varchar"/>
+      <column name="age" type="int"/>
+      <column name="registration_date" type="date"/>
+      <column name="author" type="varchar"/>
+      <column name="created_at" type="timestamp"/>
+      <column name="modified_at" type="timestamp"/>
+    </createTable>
+    <sql dbms="postgresql">
+      CREATE
+      OR REPLACE FUNCTION person_insert_update_trigger_fnc()
+      RETURNS TRIGGER
+      LANGUAGE PLPGSQL AS
+        $$
+      BEGIN
+      NEW.modified_at := now();
+      INSERT INTO person_audit(person_id, first_name, last_name, age, registration_date, author,
+                               created_at, modified_at)
+      VALUES (NEW.id, NEW.first_name, NEW.last_name, NEW.person_age, NEW.registration_date, NEW.author,
+              NEW.created_at, NEW.modified_at);
+      RETURN NEW;
+      END $$
+    </sql>
+    <sql dbms="postgresql">
+      CREATE TRIGGER person_insert_update_trigger
+      BEFORE INSERT OR UPDATE ON person
+      FOR EACH ROW
+      EXECUTE FUNCTION person_insert_update_trigger_fnc();
+    </sql>
+  </changeSet>
+
+  <changeSet id="12" author="dfilonenko">
+    <addColumn tableName="person_hobby">
+      <column name="author" type="varchar" defaultValue="liquibase">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="person_hobby">
+      <column name="created_at" type="timestamp" defaultValueComputed="now()"/>
+    </addColumn>
+    <addColumn tableName="person_hobby">
+      <column name="modified_at" type="timestamp" defaultValueComputed="now()"/>
+    </addColumn>
+    <createTable tableName="person_hobby_audit">
+      <column name="id" type="int" autoIncrement="true" incrementBy="1" startWith="1"/>
+      <column name="person_hobby_id" type="int"/>
+      <column name="person_id" type="UUID"/>
+      <column name="hobby_id" type="int"/>
+      <column name="author" type="varchar"/>
+      <column name="created_at" type="timestamp"/>
+      <column name="modified_at" type="timestamp"/>
+    </createTable>
+    <sql dbms="postgresql">
+      CREATE
+      OR REPLACE FUNCTION person_hobby_insert_update_trigger_fnc()
+      RETURNS TRIGGER
+      LANGUAGE PLPGSQL AS
+        $$
+      BEGIN
+      NEW.modified_at := now();
+      INSERT INTO person_hobby_audit(person_hobby_id, person_id, hobby_id, author,
+                                     created_at, modified_at)
+      VALUES (NEW.id, NEW.person_id, NEW.hobby_id, NEW.author, NEW.created_at, NEW.modified_at);
+      RETURN NEW;
+      END $$
+    </sql>
+    <sql dbms="postgresql">
+      CREATE TRIGGER person_hobby_insert_update_trigger
+      BEFORE INSERT OR UPDATE ON person_hobby
+      FOR EACH ROW
+      EXECUTE FUNCTION person_hobby_insert_update_trigger_fnc();
+    </sql>
+  </changeSet>
 </databaseChangeLog>

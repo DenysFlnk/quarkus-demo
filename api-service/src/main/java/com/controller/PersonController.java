@@ -53,16 +53,16 @@ public class PersonController implements PersonControllerApi {
 
     @Override
     public Uni<Person> createPerson(PersonCreateRequest personCreateRequest) {
-        return personService.createPerson(personCreateRequest);
+        return personService.createPerson(personCreateRequest, identity.getPrincipal().getName());
     }
 
     @Override
     public Uni<Void> deletePerson(String id) {
-        return personService.deletePerson(id);
+        return personService.deletePerson(id, identity.getPrincipal().getName());
     }
 
     @Override
     public Uni<Void> updatePerson(String id, Person person) {
-        return personService.updatePerson(id, person);
+        return personService.updatePerson(id, person, identity.getPrincipal().getName());
     }
 }

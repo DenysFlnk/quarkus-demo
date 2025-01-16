@@ -35,6 +35,7 @@
 
   <changeSet id="5" author="dfilonenko">
     <createTable tableName="person_hobby">
+      <column name="id" type="int" autoIncrement="true" incrementBy="1" startWith="1"/>
       <column name="person_id" type="uuid"/>
       <column name="hobby_id" type="int"/>
     </createTable>

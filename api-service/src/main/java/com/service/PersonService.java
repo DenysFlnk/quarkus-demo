@@ -57,20 +57,19 @@ public class PersonService {
     }
 
     @CacheInvalidateAll(cacheName = "personListCache")
-    public Uni<Person> createPerson(PersonCreateRequest person) {
-        return personGrpcService.createPerson(personMapper.toPersonObject(person)).map(personMapper::toPerson);
+    public Uni<Person> createPerson(PersonCreateRequest person, String author) {
+        return personGrpcService.createPerson(personMapper.toPersonObject(person, author)).map(personMapper::toPerson);
     }
 
     @CacheInvalidate(cacheName = "personCache")
     @CacheInvalidateAll(cacheName = "personListCache")
-    public Uni<Void> updatePerson(@CacheKey String id, Person person) {
-        person.setId(id);
-        return personGrpcService.updatePerson(personMapper.toPersonObject(person)).replaceWithVoid();
+    public Uni<Void> updatePerson(@CacheKey String id, Person person, String author) {
+        return personGrpcService.updatePerson(personMapper.toPersonObject(id, person, author)).replaceWithVoid();
     }
 
     @CacheInvalidate(cacheName = "personCache")
     @CacheInvalidateAll(cacheName = "personListCache")
-    public Uni<Void> deletePerson(String id) {
-        return personGrpcService.deletePerson(StringValue.of(id)).replaceWithVoid();
+    public Uni<Void> deletePerson(@CacheKey String id, String author) {
+        return personGrpcService.deletePerson(personMapper.toDeletePersonRequest(id, author)).replaceWithVoid();
     }
 }

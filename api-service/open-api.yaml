@@ -454,6 +454,43 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
+  '/quarkus-demo-api/persons/{id}/hobbies':
+    post:
+      tags:
+        - person-hobby-controller
+      summary: add Hobby to Person
+      operationId: add-hobby-to-person
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Hobby'
+      responses: {}
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+  '/quarkus-demo-api/persons/hobbies/{personHobbyId}':
+    delete:
+      tags:
+        - person-hobby-controller
+      summary: Remove PersonHobby
+      operationId: delete-person-hobby
+      parameters:
+        - name: personHobbyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses: {}
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
 components:
   schemas:
     Person:
@@ -475,13 +512,21 @@ components:
         hobbies:
           type: array
           items:
-            $ref: '#/components/schemas/Hobby'
+            $ref: '#/components/schemas/PersonHobby'
       required:
         - id
         - firstName
         - lastName
         - age
         - registrationDateTimestamp
+    PersonHobby:
+      type: object
+      title: PersonHobby
+      properties:
+        id:
+          type: integer
+        hobby:
+          $ref: '#/components/schemas/Hobby'
     Hobby:
       type: object
       title: Hobby

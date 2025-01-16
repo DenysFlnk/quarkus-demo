@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "person_hobby";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+import "hobby-service.proto";
+
+package person_hobby;
+
+service PersonHobbyProtoService {
+
+  rpc AddHobby(PersonHobbyCreateRequest) returns (google.protobuf.Empty) {}
+  rpc DeleteHobby(PersonHobbyDeleteRequest) returns (google.protobuf.Empty) {}
+}
+
+message PersonHobby {
+  int32 id = 1;
+  hobby.HobbyObject hobby = 2;
+}
+
+message PersonHobbyCreateRequest {
+  string personId = 1;
+  hobby.HobbyObject hobby = 2;
+  string author = 3;
+}
+
+message PersonHobbyDeleteRequest {
+  int32 personHobbyId = 1;
+  string author = 2;
+}

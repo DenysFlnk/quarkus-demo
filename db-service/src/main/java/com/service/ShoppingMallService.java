@@ -24,7 +24,7 @@ public class ShoppingMallService implements ShoppingMallProtoService {
 
     @Override
     public Uni<ShoppingMallList> getAllMalls(Empty request) {
-        return ShoppingMall.<ShoppingMall>listAll().map(mallMapper::toShoppingMallList);
+        return ShoppingMall.findAllFetchHobbies().map(mallMapper::toShoppingMallList);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ShoppingMallService implements ShoppingMallProtoService {
 
     @Override
     public Uni<ShoppingMallObject> getMall(Int32Value request) {
-        return ShoppingMall.<ShoppingMall>findById(request.getValue())
+        return ShoppingMall.findByIdFetchHobby(request.getValue())
             .onItem()
             .ifNull()
             .failWith(() -> new IllegalArgumentException("Invalid mall id: " + request.getValue()))

@@ -11,6 +11,7 @@ import io.smallrye.mutiny.Uni;
 import java.util.ArrayList;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import person.DeletePersonRequest;
 import person.PersonList;
 import person.PersonObject;
 import person.PersonProtoService;
@@ -84,8 +85,16 @@ public class PersonService implements PersonProtoService {
     }
 
     @Override
-    public Uni<Empty> deletePerson(StringValue request) {
-        return Panache.withTransaction(() -> Person.deleteById(UUID.fromString(request.getValue())))
+    public Uni<Empty> deletePerson(DeletePersonRequest request) {
+        return Panache.withTransaction(() -> Person.<Person>findById(UUID.fromString(request.getId()))
+                .onItem()
+                .ifNull()
+                .failWith(() -> new IllegalArgumentException("Invalid person id: " + request.getId()))
+                .flatMap(person -> {
+                    person.setAuthor(request.getAuthor());
+                    return person.persistAndFlush()
+                        .flatMap(ignored -> Person.deleteById(UUID.fromString(person.getId())));
+                }))
             .replaceWith(Empty.getDefaultInstance());
     }
 }

@@ -6,7 +6,7 @@ option java_package = "person";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/empty.proto";
-import "hobby-service.proto";
+import "person-hobby-service.proto";
 
 package person;
 
@@ -20,7 +20,7 @@ service PersonProtoService {
   rpc GetPersonsWithHobbiesByHobby(google.protobuf.StringValue) returns (PersonList) {}
   rpc CreatePerson(PersonObject) returns (PersonObject) {}
   rpc UpdatePerson(PersonObject) returns (google.protobuf.Empty) {}
-  rpc DeletePerson(google.protobuf.StringValue) returns (google.protobuf.Empty) {}
+  rpc DeletePerson(DeletePersonRequest) returns (google.protobuf.Empty) {}
 }
 
 message PersonObject {
@@ -29,9 +29,15 @@ message PersonObject {
   string lastName = 3;
   uint32 age = 4;
   google.protobuf.Timestamp registrationDateTimestamp = 5;
-  repeated hobby.HobbyObject hobbies = 6;
+  repeated person_hobby.PersonHobby hobbies = 6;
+  string author = 7;
 }
 
 message PersonList {
   repeated PersonObject person = 1;
+}
+
+message DeletePersonRequest {
+  string id = 1;
+  string author = 2;
 }

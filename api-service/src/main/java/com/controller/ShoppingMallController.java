@@ -13,7 +13,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
 
-//@Authenticated
+@Authenticated
 public class ShoppingMallController implements ShoppingMallControllerApi {
 
     @Inject
