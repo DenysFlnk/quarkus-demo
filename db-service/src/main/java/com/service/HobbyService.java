@@ -3,7 +3,6 @@ package com.service;
 import com.entity.Hobby;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Int32Value;
-import com.google.protobuf.StringValue;
 import com.mapper.HobbyMapper;
 import hobby.HobbyCreateRequest;
 import hobby.HobbyDeleteRequest;
@@ -25,7 +24,7 @@ public class HobbyService implements HobbyProtoService {
 
     @Override
     public Uni<HobbyObject> getHobby(Int32Value request) {
-        return Hobby.<Hobby>findById(request.getValue())
+        return Hobby.findByIdNotDeleted(request.getValue())
             .onItem()
             .ifNull()
             .failWith(() -> new IllegalArgumentException("Invalid hobby id: " + request.getValue()))
@@ -34,7 +33,7 @@ public class HobbyService implements HobbyProtoService {
 
     @Override
     public Uni<HobbyList> getAllHobbies(Empty request) {
-        return Hobby.<Hobby>listAll().map(hobbyMapper::toHobbyList);
+        return Hobby.findAllNotDeleted().map(hobbyMapper::toHobbyList);
     }
 
     @Override
@@ -44,7 +43,7 @@ public class HobbyService implements HobbyProtoService {
 
     @Override
     public Uni<Empty> updateHobby(HobbyObject request) {
-        return Panache.withTransaction(() -> Hobby.<Hobby>findById(request.getId())
+        return Panache.withTransaction(() -> Hobby.findByIdNotDeleted(request.getId())
                 .onItem()
                 .ifNull()
                 .failWith(() -> new IllegalArgumentException("Invalid hobby id: " + request.getId()))
@@ -54,7 +53,7 @@ public class HobbyService implements HobbyProtoService {
 
     @Override
     public Uni<Empty> deleteHobby(HobbyDeleteRequest request) {
-        return Panache.withTransaction(() -> Hobby.<Hobby>findById(request.getId())
+        return Panache.withTransaction(() -> Hobby.findByIdNotDeleted(request.getId())
                 .onItem()
                 .ifNull()
                 .failWith(() -> new IllegalArgumentException("Invalid hobby id: " + request.getId()))

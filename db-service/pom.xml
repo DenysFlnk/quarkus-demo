@@ -86,6 +86,11 @@
       <version>${lombok.version}</version>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-scheduler</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
