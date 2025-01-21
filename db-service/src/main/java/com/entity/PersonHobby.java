@@ -1,6 +1,7 @@
 package com.entity;
 
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
+import io.smallrye.mutiny.Uni;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,4 +35,22 @@ public class PersonHobby extends PanacheEntityBase {
 
     @Column(name = "author")
     private String author;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
+    public void setToDelete(String author) {
+        this.author = author;
+        this.isDeleted = true;
+    }
+
+    public void setToRestore(String author) {
+        this.author = author;
+        this.isDeleted = false;
+    }
+
+    public static Uni<PersonHobby> findByIdNotDeleted(Integer id) {
+        return PersonHobby.find("SELECT ph FROM PersonHobby ph WHERE ph.id=?1 AND ph.isDeleted=false", id)
+            .firstResult();
+    }
 }

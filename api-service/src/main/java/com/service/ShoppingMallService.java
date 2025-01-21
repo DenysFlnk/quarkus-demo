@@ -1,7 +1,6 @@
 package com.service;
 
-import com.google.protobuf.Empty;
-import com.google.protobuf.Int32Value;
+import com.google.protobuf.BoolValue;
 import com.mapper.ShoppingMallMapper;
 import com.messaging.producer.ShoppingMallNotificationProducer;
 import com.quarkus.model.AlertToPersonList;
@@ -34,19 +33,21 @@ public class ShoppingMallService {
     ShoppingMallProtoService shoppingMallProtoService;
 
     @CacheResult(cacheName = "shoppingMallListCache")
-    public Uni<List<ShoppingMall>> getAllShoppingMalls() {
-        return shoppingMallProtoService.getAllMalls(Empty.getDefaultInstance()).map(mallMapper::toShoppingMallList);
+    public Uni<List<ShoppingMall>> getAllShoppingMalls(Boolean includeDeleted) {
+        return shoppingMallProtoService.getAllMalls(BoolValue.of(includeDeleted)).map(mallMapper::toShoppingMallList);
     }
 
     @CacheResult(cacheName = "restrictedShoppingMallListCache")
-    public Uni<List<ShoppingMall>> getRestrictedShoppingMalls(List<Integer> restrictedIds) {
-        return shoppingMallProtoService.getMallsWithoutRestricted(mallMapper.toRestrictedMallIds(restrictedIds))
+    public Uni<List<ShoppingMall>> getRestrictedShoppingMalls(List<Integer> restrictedIds, Boolean includeDeleted) {
+        return shoppingMallProtoService.getMallsWithoutRestricted(mallMapper.toRestrictedMallIds(restrictedIds,
+                includeDeleted))
             .map(mallMapper::toShoppingMallList);
     }
 
     @CacheResult(cacheName = "shoppingMallCache")
-    public Uni<ShoppingMall> getShoppingMallById(Integer id) {
-        return shoppingMallProtoService.getMall(Int32Value.of(id)).map(mallMapper::toShoppingMall);
+    public Uni<ShoppingMall> getShoppingMallById(Integer id, Boolean includeDeleted) {
+        return shoppingMallProtoService.getMall(mallMapper.toGetMallRequest(id, includeDeleted))
+            .map(mallMapper::toShoppingMall);
     }
 
     @CacheInvalidateAll(cacheName = "shoppingMallListCache")
@@ -59,7 +60,7 @@ public class ShoppingMallService {
     @CacheInvalidateAll(cacheName = "shoppingMallListCache")
     @CacheInvalidateAll(cacheName = "restrictedShoppingMallListCache")
     public Uni<Void> updateShoppingMall(@CacheKey Integer id, ShoppingMallUpdateRequest shoppingMall, String author) {
-        return shoppingMallProtoService.getMall(Int32Value.of(id))
+        return shoppingMallProtoService.getMall(mallMapper.toGetMallRequest(id, false))
             .flatMap(mall ->
                 shoppingMallProtoService.updateMall(mallMapper.updateAndBuildShoppingMall(mall, shoppingMall, author)))
             .replaceWithVoid();
@@ -72,6 +73,13 @@ public class ShoppingMallService {
         return shoppingMallProtoService.deleteMall(mallMapper.toDeleteMallRequest(id, author)).replaceWithVoid();
     }
 
+    @CacheInvalidate(cacheName = "shoppingMallCache")
+    @CacheInvalidateAll(cacheName = "shoppingMallListCache")
+    @CacheInvalidateAll(cacheName = "restrictedShoppingMallListCache")
+    public Uni<Void> restoreShoppingMall(@CacheKey Integer id, String author) {
+        return shoppingMallProtoService.restoreMall(mallMapper.toRestoreMallRequest(id, author)).replaceWithVoid();
+    }
+
     public Uni<Void> sendAlertToPersonList(AlertToPersonList alertToPersonList) {
         if (alertToPersonList.getIdList().isEmpty() || alertToPersonList.getMessage().isEmpty()) {
             throw new IllegalArgumentException("Person id list or message is empty");
@@ -80,11 +88,11 @@ public class ShoppingMallService {
         return notificationProducer.buildAndPublish(alertToPersonList.getIdList(), alertToPersonList.getMessage());
     }
 
-    public Uni<File> getShoppingMallListXlsxFile() {
-        return getAllShoppingMalls().map(documentService::convertShoppingMallListToXlsx);
+    public Uni<File> getShoppingMallListXlsxFile(Boolean includeDeleted) {
+        return getAllShoppingMalls(includeDeleted).map(documentService::convertShoppingMallListToXlsx);
     }
 
-    public Uni<File> getShoppingMallListDocxFile() {
-        return getAllShoppingMalls().map(documentService::convertShoppingMallListToDocx);
+    public Uni<File> getShoppingMallListDocxFile(Boolean includeDeleted) {
+        return getAllShoppingMalls(includeDeleted).map(documentService::convertShoppingMallListToDocx);
     }
 }

@@ -23,31 +23,31 @@ public class PersonController implements PersonControllerApi {
 
     @RolesAllowed({Role.PERSON_VIEW, Role.PERSON_HOBBY_VIEW})
     @Override
-    public Uni<List<Person>> getAllPersons() {
+    public Uni<List<Person>> getAllPersons(Boolean includeDeleted) {
         if (identity.getRoles().contains(Role.PERSON_HOBBY_VIEW)) {
-            return personService.getAllPersonsWithHobbies();
+            return personService.getAllPersonsWithHobbies(includeDeleted);
         } else {
-            return personService.getAllPersons();
+            return personService.getAllPersons(includeDeleted);
         }
     }
 
     @RolesAllowed({Role.PERSON_VIEW, Role.PERSON_HOBBY_VIEW})
     @Override
-    public Uni<List<Person>> getAllPersonsByHobby(String hobby) {
+    public Uni<List<Person>> getAllPersonsByHobby(String hobby, Boolean includeDeleted) {
         if (identity.getRoles().contains(Role.PERSON_HOBBY_VIEW)) {
-            return personService.getPersonsWithHobbiesByHobby(hobby);
+            return personService.getPersonsWithHobbiesByHobby(hobby, includeDeleted);
         } else {
-            return personService.getPersonsByHobby(hobby);
+            return personService.getPersonsByHobby(hobby, includeDeleted);
         }
     }
 
     @RolesAllowed({Role.PERSON_VIEW, Role.PERSON_HOBBY_VIEW})
     @Override
-    public Uni<Person> getPerson(String id) {
+    public Uni<Person> getPerson(String id, Boolean includeDeleted) {
         if (identity.getRoles().contains(Role.PERSON_HOBBY_VIEW)) {
-            return personService.getPersonWithHobby(id);
+            return personService.getPersonWithHobby(id, includeDeleted);
         } else {
-            return personService.getPerson(id);
+            return personService.getPerson(id, includeDeleted);
         }
     }
 
@@ -59,6 +59,11 @@ public class PersonController implements PersonControllerApi {
     @Override
     public Uni<Void> deletePerson(String id) {
         return personService.deletePerson(id, identity.getPrincipal().getName());
+    }
+
+    @Override
+    public Uni<Void> restorePerson(String id) {
+        return personService.restorePerson(id, identity.getPrincipal().getName());
     }
 
     @Override

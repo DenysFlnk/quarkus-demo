@@ -45,16 +45,49 @@ public class ShoppingMall extends PanacheEntityBase {
     @Column(name = "author")
     private String author;
 
-    public static Uni<List<ShoppingMall>> findAllExcept(List<Integer> ids) {
-        return ShoppingMall.list("SELECT s FROM ShoppingMall s JOIN FETCH s.hobbies WHERE s.id NOT IN(?1)", ids);
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
+    public void setToDelete(String author) {
+        this.author = author;
+        this.isDeleted = true;
+    }
+
+    public void setToRestore(String author) {
+        this.author = author;
+        this.isDeleted = false;
+    }
+
+    public static Uni<List<ShoppingMall>> findAllFetchHobbiesExcept(List<Integer> mallIds) {
+        return ShoppingMall.list("SELECT s FROM ShoppingMall s JOIN FETCH s.hobbies h WHERE h.id NOT IN(?1)", mallIds);
+    }
+
+    public static Uni<List<ShoppingMall>> findAllNotDeletedFetchHobbiesExcept(List<Integer> mallIds) {
+        return ShoppingMall.list("SELECT s FROM ShoppingMall s JOIN FETCH s.hobbies h WHERE s.isDeleted=false"
+            + "AND h.id NOT IN(?1) AND h.isDeleted=false AND h.hobby.isDeleted=false", mallIds);
     }
 
     public static Uni<List<ShoppingMall>> findAllFetchHobbies() {
         return ShoppingMall.list("SELECT s FROM ShoppingMall s JOIN FETCH s.hobbies");
     }
 
+    public static Uni<List<ShoppingMall>> findAllNotDeletedFetchHobbies() {
+        return ShoppingMall.list("SELECT s FROM ShoppingMall s JOIN FETCH s.hobbies h WHERE s.isDeleted=false "
+            + "AND h.isDeleted=false AND h.hobby.isDeleted=false");
+    }
+
     public static Uni<ShoppingMall> findByIdFetchHobby(Integer id) {
-        return ShoppingMall.find("SELECT s FROM ShoppingMall s JOIN FETCH s.hobbies WHERE s.id = ?1", id)
+        return ShoppingMall.find("SELECT s FROM ShoppingMall s JOIN FETCH s.hobbies h WHERE h.id = ?1", id)
+            .firstResult();
+    }
+
+    public static Uni<ShoppingMall> findByIdNotDeletedFetchHobby(Integer id) {
+        return ShoppingMall.find("SELECT s FROM ShoppingMall s JOIN FETCH s.hobbies h WHERE s.isDeleted=false "
+            + "AND h.id = ?1 AND h.isDeleted=false AND h.hobby.isDeleted=false", id).firstResult();
+    }
+
+    public static Uni<ShoppingMall> findByIdNotDeleted(Integer id) {
+        return ShoppingMall.find("SELECT s FROM ShoppingMall s WHERE s.id=?1 AND s.isDeleted=false", id)
             .firstResult();
     }
 }

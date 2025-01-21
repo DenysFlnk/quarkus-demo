@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import shopping_mall_hobby.ShoppingMallHobbyCreateRequest;
 import shopping_mall_hobby.ShoppingMallHobbyDeleteRequest;
 import shopping_mall_hobby.ShoppingMallHobbyProtoService;
+import shopping_mall_hobby.ShoppingMallHobbyRestoreRequest;
 
 @GrpcService
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class ShoppingMallHobbyService implements ShoppingMallHobbyProtoService {
 
     @Override
     public Uni<Empty> addHobby(ShoppingMallHobbyCreateRequest request) {
-        return Panache.withTransaction(() -> ShoppingMall.<ShoppingMall>findById(request.getMallId())
+        return Panache.withTransaction(() -> ShoppingMall.findByIdNotDeleted(request.getMallId())
                 .flatMap(mall -> {
                     ShoppingMallHobby shoppingMallHobby = mallMapper.toShoppingMallHobby(request);
                     shoppingMallHobby.setShoppingMall(mall);
@@ -33,17 +34,24 @@ public class ShoppingMallHobbyService implements ShoppingMallHobbyProtoService {
 
     @Override
     public Uni<Empty> deleteHobby(ShoppingMallHobbyDeleteRequest request) {
-        return Panache.withTransaction(() ->
-                ShoppingMallHobby.<ShoppingMallHobby>findById(request.getShoppingMallHobbyId())
+        return Panache.withTransaction(() -> ShoppingMallHobby.findByIdNotDeleted(request.getShoppingMallHobbyId())
                     .onItem()
                     .ifNull()
                     .failWith(() -> new IllegalArgumentException(
                         "Invalid ShoppingMallHobby id: " + request.getShoppingMallHobbyId()))
-                    .flatMap(mallHobby -> {
-                        mallHobby.setAuthor(request.getAuthor());
-                        return mallHobby.persistAndFlush()
-                            .flatMap(ignored -> ShoppingMallHobby.deleteById(mallHobby.getId()));
-                    }))
+                    .invoke(mallHobby -> mallHobby.setToDelete(request.getAuthor())))
+            .replaceWith(Empty.getDefaultInstance());
+    }
+
+    @Override
+    public Uni<Empty> restoreHobby(ShoppingMallHobbyRestoreRequest request) {
+        return Panache.withTransaction(() ->
+                ShoppingMallHobby.<ShoppingMallHobby>findById(request.getShoppingMallHobbyId())
+                .onItem()
+                .ifNull()
+                .failWith(() -> new IllegalArgumentException(
+                    "Invalid ShoppingMallHobby id: " + request.getShoppingMallHobbyId()))
+                .invoke(mallHobby -> mallHobby.setToRestore(request.getAuthor())))
             .replaceWith(Empty.getDefaultInstance());
     }
 }

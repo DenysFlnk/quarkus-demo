@@ -26,4 +26,9 @@ public class PersonHobbyController implements PersonHobbyControllerApi {
     public Uni<Void> deletePersonHobby(Integer personHobbyId) {
         return personHobbyService.removeHobbyFromPerson(personHobbyId, securityIdentity.getPrincipal().getName());
     }
+
+    @Override
+    public Uni<Void> restorePersonHobby(Integer personHobbyId) {
+        return personHobbyService.restoreHobbyInPerson(personHobbyId, securityIdentity.getPrincipal().getName());
+    }
 }

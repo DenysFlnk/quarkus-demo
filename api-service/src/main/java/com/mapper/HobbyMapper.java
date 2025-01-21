@@ -3,8 +3,10 @@ package com.mapper;
 import com.quarkus.model.Hobby;
 import hobby.HobbyCreateRequest;
 import hobby.HobbyDeleteRequest;
+import hobby.HobbyGetRequest;
 import hobby.HobbyList;
 import hobby.HobbyObject;
+import hobby.HobbyRestoreRequest;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -28,4 +30,8 @@ public interface HobbyMapper {
     HobbyCreateRequest toHobbyCreateRequest(com.quarkus.model.HobbyCreateRequest request, String author);
 
     HobbyDeleteRequest toHobbyDeleteRequest(Integer id, String author);
+
+    HobbyGetRequest toHobbyGetRequest(Integer id, Boolean includeDeleted);
+
+    HobbyRestoreRequest toHobbyRestoreRequest(Integer id, String author);
 }

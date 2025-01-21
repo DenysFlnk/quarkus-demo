@@ -32,4 +32,10 @@ public class PersonHobbyService {
         return personHobbyProtoService.deleteHobby(personMapper.toPersonHobbyDeleteRequest(personHobbyId, author))
             .replaceWithVoid();
     }
+
+    @CacheInvalidateAll(cacheName = "personListCache")
+    public Uni<Void> restoreHobbyInPerson(Integer personHobbyId, String author) {
+        return personHobbyProtoService.restoreHobby(personMapper.toPersonHobbyRestoreRequest(personHobbyId, author))
+            .replaceWithVoid();
+    }
 }

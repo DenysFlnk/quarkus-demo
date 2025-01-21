@@ -36,6 +36,11 @@ public class Hobby extends PanacheEntityBase {
         this.isDeleted = true;
     }
 
+    public void setToRestore(String author) {
+        this.author = author;
+        this.isDeleted = false;
+    }
+
     public static Uni<Hobby> findByIdNotDeleted(Integer id) {
         return Hobby.find("SELECT h FROM Hobby h WHERE h.id = ?1 AND h.isDeleted = false", id).firstResult();
     }

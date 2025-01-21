@@ -27,4 +27,10 @@ public class ShoppingMallHobbyController implements ShoppingMallHobbyControllerA
         return shoppingMallHobbyService.deleteHobbyFromShoppingMall(shoppingMallHobbyId,
             restrictionService.getRequestAuthor());
     }
+
+    @Override
+    public Uni<Void> restoreShoppingMallHobby(Integer shoppingMallHobbyId) {
+        return shoppingMallHobbyService.restoreHobbyInShoppingMall(shoppingMallHobbyId,
+            restrictionService.getRequestAuthor());
+    }
 }

@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,4 +34,22 @@ public class ShoppingMallHobby extends PanacheEntityBase {
 
     @Column(name = "author")
     private String author;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
+    public void setToDelete(String author) {
+        this.author = author;
+        this.isDeleted = true;
+    }
+
+    public void setToRestore(String author) {
+        this.author = author;
+        this.isDeleted = false;
+    }
+
+    public static Uni<ShoppingMallHobby> findByIdNotDeleted(Integer id) {
+        return ShoppingMallHobby.find("SELECT sh FROM ShoppingMallHobby sh WHERE sh.id=?1 AND sh.isDeleted=false",
+            id).firstResult();
+    }
 }

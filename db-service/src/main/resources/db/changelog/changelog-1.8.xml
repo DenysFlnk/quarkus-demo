@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+  xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+  <changeSet id="15" author="dfilonenko">
+    <addColumn tableName="person">
+      <column name="is_deleted" type="boolean" defaultValue="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <createIndex tableName="person" indexName="person_is_deleted_index">
+      <column name="is_deleted"/>
+    </createIndex>
+    <addColumn tableName="person_audit">
+      <column name="is_deleted" type="boolean" defaultValue="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="person_hobby">
+      <column name="is_deleted" type="boolean" defaultValue="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <createIndex tableName="person_hobby" indexName="person_hobby_is_deleted_index">
+      <column name="is_deleted"/>
+    </createIndex>
+    <addColumn tableName="person_hobby_audit">
+      <column name="is_deleted" type="boolean" defaultValue="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="shopping_mall">
+      <column name="is_deleted" type="boolean" defaultValue="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <createIndex tableName="shopping_mall" indexName="shopping_mall_is_deleted_index">
+      <column name="is_deleted"/>
+    </createIndex>
+    <addColumn tableName="shopping_mall_audit">
+      <column name="is_deleted" type="boolean" defaultValue="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="shopping_mall_hobby">
+      <column name="is_deleted" type="boolean" defaultValue="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <createIndex tableName="shopping_mall_hobby" indexName="shopping_mall_hobby_is_deleted_index">
+      <column name="is_deleted"/>
+    </createIndex>
+    <addColumn tableName="shopping_mall_hobby_audit">
+      <column name="is_deleted" type="boolean" defaultValue="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="hobby_audit">
+      <column name="is_deleted" type="boolean" defaultValue="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+
+
+    <sql dbms="postgresql">
+      CREATE
+      OR REPLACE FUNCTION hobby_insert_update_trigger_fnc()
+      RETURNS TRIGGER
+      LANGUAGE PLPGSQL AS
+        $$
+      BEGIN
+      NEW.modified_at := now();
+      INSERT INTO hobby_audit(hobby_id, name, author, created_at, modified_at, is_deleted)
+      VALUES (NEW.id, NEW.name, NEW.author, NEW.created_at, NEW.modified_at, NEW.is_deleted);
+      RETURN NEW;
+      END $$
+    </sql>
+    <sql dbms="postgresql">
+      CREATE
+      OR REPLACE FUNCTION person_insert_update_trigger_fnc()
+      RETURNS TRIGGER
+      LANGUAGE PLPGSQL AS
+        $$
+      BEGIN
+      NEW.modified_at := now();
+      INSERT INTO person_audit(person_id, first_name, last_name, age, registration_date, author,
+                               created_at, modified_at, is_deleted)
+      VALUES (NEW.id, NEW.first_name, NEW.last_name, NEW.person_age, NEW.registration_date, NEW.author,
+              NEW.created_at, NEW.modified_at, NEW.is_deleted);
+      RETURN NEW;
+      END $$
+    </sql>
+    <sql dbms="postgresql">
+      CREATE
+      OR REPLACE FUNCTION person_hobby_insert_update_trigger_fnc()
+      RETURNS TRIGGER
+      LANGUAGE PLPGSQL AS
+        $$
+      BEGIN
+      NEW.modified_at := now();
+      INSERT INTO person_hobby_audit(person_hobby_id, person_id, hobby_id, author,
+                                     created_at, modified_at, is_deleted)
+      VALUES (NEW.id, NEW.person_id, NEW.hobby_id, NEW.author, NEW.created_at, NEW.modified_at,
+              NEW.is_deleted);
+      RETURN NEW;
+      END $$
+    </sql>
+    <sql dbms="postgresql">
+      CREATE
+      OR REPLACE FUNCTION mall_insert_update_trigger_fnc()
+      RETURNS TRIGGER
+      LANGUAGE PLPGSQL AS
+        $$
+      BEGIN
+        NEW.modified_at := now();
+      INSERT INTO shopping_mall_audit(shopping_mall_id, name, location, author, created_at,
+                                      modified_at, is_deleted)
+      VALUES (NEW.id, NEW.name, NEW.location, NEW.author, NEW.created_at, NEW.modified_at,
+              NEW.is_deleted);
+      RETURN NEW;
+      END $$
+    </sql>
+    <sql dbms="postgresql">
+      CREATE
+      OR REPLACE FUNCTION mall_hobby_insert_update_trigger_fnc()
+      RETURNS TRIGGER
+      LANGUAGE PLPGSQL AS
+        $$
+      BEGIN
+      NEW.modified_at := now();
+      INSERT INTO shopping_mall_hobby_audit(shopping_mall_hobby_id, shopping_mall_id, hobby_id,
+                                            author, created_at, modified_at, is_deleted)
+      VALUES (NEW.id, NEW.shopping_mall_id, NEW.hobby_id, NEW.author, NEW.created_at,
+              NEW.modified_at, NEW.is_deleted);
+      RETURN NEW;
+      END $$
+    </sql>
+  </changeSet>
+</databaseChangeLog>

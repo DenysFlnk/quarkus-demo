@@ -15,12 +15,15 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.ValueMapping;
 import org.mapstruct.ValueMappings;
 import shopping_mall.DeleteMallRequest;
+import shopping_mall.GetMallRequest;
 import shopping_mall.OperationalStatus;
+import shopping_mall.RestoreMallRequest;
 import shopping_mall.RestrictedMallIds;
 import shopping_mall.ShoppingMallList;
 import shopping_mall.ShoppingMallObject;
 import shopping_mall_hobby.ShoppingMallHobbyCreateRequest;
 import shopping_mall_hobby.ShoppingMallHobbyDeleteRequest;
+import shopping_mall_hobby.ShoppingMallHobbyRestoreRequest;
 
 @Mapper(
     uses = {JsonNullableMapper.class, LocationMapper.class, HobbyMapper.class},
@@ -42,9 +45,10 @@ public interface ShoppingMallMapper {
         return builder.build();
     }
 
-    default RestrictedMallIds toRestrictedMallIds(List<Integer> restrictedMallIds) {
+    default RestrictedMallIds toRestrictedMallIds(List<Integer> restrictedMallIds, Boolean includeDeleted) {
         return RestrictedMallIds.newBuilder()
             .addAllIds(restrictedMallIds)
+            .setIncludeDeleted(includeDeleted)
             .build();
     }
 
@@ -106,4 +110,10 @@ public interface ShoppingMallMapper {
     ShoppingMallHobbyCreateRequest toShoppingMallHobbyCreateRequest(Integer mallId, Hobby hobby, String author);
 
     ShoppingMallHobbyDeleteRequest toShoppingMallHobbyDeleteRequest(Integer shoppingMallHobbyId, String author);
+
+    GetMallRequest toGetMallRequest(Integer id, Boolean includeDeleted);
+
+    RestoreMallRequest toRestoreMallRequest(Integer id, String author);
+
+    ShoppingMallHobbyRestoreRequest toShoppingMallHobbyRestoreRequest(Integer shoppingMallHobbyId, String author);
 }

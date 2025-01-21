@@ -23,23 +23,23 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
     MallRestrictionService restrictionService;
 
     @Override
-    public Uni<List<ShoppingMall>> getAllShoppingMalls() {
+    public Uni<List<ShoppingMall>> getAllShoppingMalls(Boolean includeDeleted) {
         List<Integer> restrictedMalls = restrictionService.getRestrictedMalls();
 
         if (restrictedMalls.isEmpty()) {
-            return shoppingMallService.getAllShoppingMalls();
+            return shoppingMallService.getAllShoppingMalls(includeDeleted);
         } else {
-            return shoppingMallService.getRestrictedShoppingMalls(restrictedMalls);
+            return shoppingMallService.getRestrictedShoppingMalls(restrictedMalls, includeDeleted);
         }
     }
 
     @Override
-    public Uni<ShoppingMall> getShoppingMall(Integer id) {
+    public Uni<ShoppingMall> getShoppingMall(Integer id, Boolean includeDeleted) {
         if (restrictionService.isRestrictedMall(id)) {
             throw new SecurityException("Shopping mall is restricted");
         }
 
-        return shoppingMallService.getShoppingMallById(id);
+        return shoppingMallService.getShoppingMallById(id, includeDeleted);
     }
 
     @Override
@@ -54,6 +54,11 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
         }
 
         return shoppingMallService.deleteShoppingMall(id, restrictionService.getRequestAuthor());
+    }
+
+    @Override
+    public Uni<Void> restoreShoppingMall(Integer id) {
+        return shoppingMallService.restoreShoppingMall(id, restrictionService.getRequestAuthor());
     }
 
     @Override
@@ -72,16 +77,16 @@ public class ShoppingMallController implements ShoppingMallControllerApi {
     }
 
     @Override
-    public Uni<Response> downloadShoppingMallsListXlsx() {
-        return shoppingMallService.getShoppingMallListXlsxFile()
+    public Uni<Response> downloadShoppingMallsListXlsx(Boolean includeDeleted) {
+        return shoppingMallService.getShoppingMallListXlsxFile(includeDeleted)
             .map(file -> Response.ok(file)
                 .header("Content-Disposition", "attachment; filename=shopping_mall_list.xlsx")
                 .build());
     }
 
     @Override
-    public Uni<Response> downloadShoppingMallsListDocx() {
-        return shoppingMallService.getShoppingMallListDocxFile()
+    public Uni<Response> downloadShoppingMallsListDocx(Boolean includeDeleted) {
+        return shoppingMallService.getShoppingMallListDocxFile(includeDeleted)
             .map(file -> Response.ok(file)
                 .header("Content-Disposition", "attachment; filename=shopping_mall_list.docx")
                 .build());

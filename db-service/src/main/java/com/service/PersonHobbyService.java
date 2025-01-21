@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import person_hobby.PersonHobbyCreateRequest;
 import person_hobby.PersonHobbyDeleteRequest;
 import person_hobby.PersonHobbyProtoService;
+import person_hobby.PersonHobbyRestoreRequest;
 
 @GrpcService
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class PersonHobbyService implements PersonHobbyProtoService {
 
     @Override
     public Uni<Empty> addHobby(PersonHobbyCreateRequest request) {
-        return Panache.withTransaction(() -> Person.<Person>findById(UUID.fromString(request.getPersonId()))
+        return Panache.withTransaction(() -> Person.findByIdNotDeleted(UUID.fromString(request.getPersonId()))
                 .flatMap(person -> {
                     PersonHobby personHobby = personMapper.toPersonHobby(request);
                     personHobby.setPerson(person);
@@ -34,15 +35,21 @@ public class PersonHobbyService implements PersonHobbyProtoService {
 
     @Override
     public Uni<Empty> deleteHobby(PersonHobbyDeleteRequest request) {
+        return Panache.withTransaction(() -> PersonHobby.findByIdNotDeleted(request.getPersonHobbyId())
+                .onItem()
+                .ifNull()
+                .failWith(() -> new IllegalArgumentException("Invalid PersonHobby id: " + request.getPersonHobbyId()))
+                .invoke(personHobby -> personHobby.setToDelete(request.getAuthor())))
+            .replaceWith(Empty.getDefaultInstance());
+    }
+
+    @Override
+    public Uni<Empty> restoreHobby(PersonHobbyRestoreRequest request) {
         return Panache.withTransaction(() -> PersonHobby.<PersonHobby>findById(request.getPersonHobbyId())
-            .onItem()
-            .ifNull()
-            .failWith(() -> new IllegalArgumentException("Invalid PersonHobby id: " + request.getPersonHobbyId()))
-            .flatMap(personHobby -> {
-                personHobby.setAuthor(request.getAuthor());
-                return personHobby.persistAndFlush()
-                    .flatMap(ignored -> PersonHobby.deleteById(personHobby.getId()));
-            }))
+                .onItem()
+                .ifNull()
+                .failWith(() -> new IllegalArgumentException("Invalid PersonHobby id: " + request.getPersonHobbyId()))
+                .invoke(personHobby -> personHobby.setToRestore(request.getAuthor())))
             .replaceWith(Empty.getDefaultInstance());
     }
 }

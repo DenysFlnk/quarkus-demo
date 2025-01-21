@@ -13,6 +13,7 @@ service ShoppingMallHobbyProtoService {
 
   rpc AddHobby(ShoppingMallHobbyCreateRequest) returns (google.protobuf.Empty) {}
   rpc DeleteHobby(ShoppingMallHobbyDeleteRequest) returns (google.protobuf.Empty) {}
+  rpc RestoreHobby(ShoppingMallHobbyRestoreRequest) returns (google.protobuf.Empty) {}
 }
 
 message ShoppingMallHobby {
@@ -27,6 +28,11 @@ message ShoppingMallHobbyCreateRequest {
 }
 
 message ShoppingMallHobbyDeleteRequest {
+  int32 shoppingMallHobbyId = 1;
+  string author = 3;
+}
+
+message ShoppingMallHobbyRestoreRequest {
   int32 shoppingMallHobbyId = 1;
   string author = 3;
 }

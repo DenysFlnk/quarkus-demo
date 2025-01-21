@@ -10,10 +10,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import person.DeletePersonRequest;
+import person.PersonByHobbyRequest;
+import person.PersonGetRequest;
 import person.PersonList;
 import person.PersonObject;
+import person.RestorePersonRequest;
 import person_hobby.PersonHobbyCreateRequest;
 import person_hobby.PersonHobbyDeleteRequest;
+import person_hobby.PersonHobbyRestoreRequest;
 
 @Mapper(collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE,
     componentModel =  MappingConstants.ComponentModel.JAKARTA_CDI)
@@ -50,4 +54,12 @@ public interface PersonMapper {
     PersonHobbyCreateRequest toPersonHobbyCreateRequest(String personId, Hobby hobby, String author);
 
     PersonHobbyDeleteRequest toPersonHobbyDeleteRequest(Integer personHobbyId, String author);
+
+    PersonGetRequest toPersonGetRequest(String id, Boolean includeDeleted);
+
+    PersonByHobbyRequest toPersonByHobbyRequest(String hobbyName, Boolean includeDeleted);
+
+    RestorePersonRequest toRestorePersonRequest(String id, String author);
+
+    PersonHobbyRestoreRequest toPersonHobbyRestoreRequest(Integer personHobbyId, String author);
 }

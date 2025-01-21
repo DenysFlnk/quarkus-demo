@@ -10,11 +10,12 @@ package hobby;
 
 service HobbyProtoService {
 
-  rpc GetHobby(google.protobuf.Int32Value) returns (HobbyObject) {}
-  rpc GetAllHobbies(google.protobuf.Empty) returns (HobbyList) {}
+  rpc GetHobby(HobbyGetRequest) returns (HobbyObject) {}
+  rpc GetAllHobbies(google.protobuf.BoolValue) returns (HobbyList) {}
   rpc CreateHobby(HobbyCreateRequest) returns (HobbyObject) {}
   rpc UpdateHobby(HobbyObject) returns (google.protobuf.Empty) {}
   rpc DeleteHobby(HobbyDeleteRequest) returns (google.protobuf.Empty) {}
+  rpc RestoreHobby(HobbyRestoreRequest) returns (google.protobuf.Empty) {}
 }
 
 message HobbyObject {
@@ -27,12 +28,22 @@ message HobbyList {
   repeated HobbyObject hobbies = 1;
 }
 
+message HobbyGetRequest {
+  int32 id = 1;
+  bool includeDeleted = 2;
+}
+
 message HobbyCreateRequest {
   string name = 1;
   string author = 2;
 }
 
 message HobbyDeleteRequest {
+  int32 id = 1;
+  string author = 2;
+}
+
+message HobbyRestoreRequest {
   int32 id = 1;
   string author = 2;
 }

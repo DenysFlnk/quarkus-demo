@@ -1,7 +1,6 @@
 package com.service;
 
-import com.google.protobuf.Empty;
-import com.google.protobuf.StringValue;
+import com.google.protobuf.BoolValue;
 import com.mapper.PersonMapper;
 import com.quarkus.model.Person;
 import com.quarkus.model.PersonCreateRequest;
@@ -26,33 +25,37 @@ public class PersonService {
     PersonProtoService personGrpcService;
 
     @CacheResult(cacheName = "personCache")
-    public Uni<Person> getPerson(String id) {
-        return personGrpcService.getPerson(StringValue.of(id)).map(personMapper::toPerson);
+    public Uni<Person> getPerson(String id, Boolean includeDeleted) {
+        return personGrpcService.getPerson(personMapper.toPersonGetRequest(id, includeDeleted))
+            .map(personMapper::toPerson);
     }
 
     @CacheResult(cacheName = "personCache")
-    public Uni<Person> getPersonWithHobby(String id) {
-        return personGrpcService.getPersonWithHobby(StringValue.of(id)).map(personMapper::toPerson);
+    public Uni<Person> getPersonWithHobby(String id, Boolean includeDeleted) {
+        return personGrpcService.getPersonWithHobby(personMapper.toPersonGetRequest(id, includeDeleted))
+            .map(personMapper::toPerson);
     }
 
     @CacheResult(cacheName = "personListCache")
-    public Uni<List<Person>> getAllPersons() {
-        return personGrpcService.getAllPersons(Empty.getDefaultInstance()).map(personMapper::toPersonList);
+    public Uni<List<Person>> getAllPersons(Boolean includeDeleted) {
+        return personGrpcService.getAllPersons(BoolValue.of(includeDeleted)).map(personMapper::toPersonList);
     }
 
     @CacheResult(cacheName = "personListCache")
-    public Uni<List<Person>> getAllPersonsWithHobbies() {
-        return personGrpcService.getAllPersonsWithHobbies(Empty.getDefaultInstance()).map(personMapper::toPersonList);
+    public Uni<List<Person>> getAllPersonsWithHobbies(Boolean includeDeleted) {
+        return personGrpcService.getAllPersonsWithHobbies(BoolValue.of(includeDeleted)).map(personMapper::toPersonList);
     }
 
     @CacheResult(cacheName = "personListCache")
-    public Uni<List<Person>> getPersonsByHobby(@CacheKey String hobbyName) {
-        return personGrpcService.getPersonsByHobby(StringValue.of(hobbyName)).map(personMapper::toPersonList);
+    public Uni<List<Person>> getPersonsByHobby(@CacheKey String hobbyName, Boolean includeDeleted) {
+        return personGrpcService.getPersonsByHobby(personMapper.toPersonByHobbyRequest(hobbyName, includeDeleted))
+            .map(personMapper::toPersonList);
     }
 
     @CacheResult(cacheName = "personListCache")
-    public Uni<List<Person>> getPersonsWithHobbiesByHobby(@CacheKey String hobbyName) {
-        return personGrpcService.getPersonsWithHobbiesByHobby(StringValue.of(hobbyName))
+    public Uni<List<Person>> getPersonsWithHobbiesByHobby(@CacheKey String hobbyName, Boolean includeDeleted) {
+        return personGrpcService.getPersonsWithHobbiesByHobby(personMapper.toPersonByHobbyRequest(hobbyName,
+                includeDeleted))
             .map(personMapper::toPersonList);
     }
 
@@ -71,5 +74,11 @@ public class PersonService {
     @CacheInvalidateAll(cacheName = "personListCache")
     public Uni<Void> deletePerson(@CacheKey String id, String author) {
         return personGrpcService.deletePerson(personMapper.toDeletePersonRequest(id, author)).replaceWithVoid();
+    }
+
+    @CacheInvalidate(cacheName = "personCache")
+    @CacheInvalidateAll(cacheName = "personListCache")
+    public Uni<Void> restorePerson(@CacheKey String id, String author) {
+        return personGrpcService.restorePerson(personMapper.toRestorePersonRequest(id, author)).replaceWithVoid();
     }
 }

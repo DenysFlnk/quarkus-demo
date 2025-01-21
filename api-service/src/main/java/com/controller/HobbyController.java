@@ -20,13 +20,13 @@ public class HobbyController implements HobbyControllerApi {
     SecurityIdentity securityIdentity;
 
     @Override
-    public Uni<Hobby> getHobby(Integer id) {
-        return hobbyService.getHobby(id);
+    public Uni<Hobby> getHobby(Integer id, Boolean includeDeleted) {
+        return hobbyService.getHobby(id, includeDeleted);
     }
 
     @Override
-    public Uni<List<Hobby>> getAllHobbies() {
-        return hobbyService.getAllHobbies();
+    public Uni<List<Hobby>> getAllHobbies(Boolean includeDeleted) {
+        return hobbyService.getAllHobbies(includeDeleted);
     }
 
     @Override
@@ -42,5 +42,10 @@ public class HobbyController implements HobbyControllerApi {
     @Override
     public Uni<Void> deleteHobby(Integer id) {
         return hobbyService.deleteHobby(id, securityIdentity.getPrincipal().getName());
+    }
+
+    @Override
+    public Uni<Void> restoreHobby(Integer id) {
+        return hobbyService.restoreHobby(id, securityIdentity.getPrincipal().getName());
     }
 }

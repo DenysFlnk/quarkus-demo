@@ -12,15 +12,16 @@ package person;
 
 service PersonProtoService {
 
-  rpc GetPerson(google.protobuf.StringValue) returns (PersonObject) {}
-  rpc GetPersonWithHobby(google.protobuf.StringValue) returns (PersonObject) {}
-  rpc GetAllPersons(google.protobuf.Empty) returns (PersonList) {}
-  rpc GetAllPersonsWithHobbies(google.protobuf.Empty) returns (PersonList) {}
-  rpc GetPersonsByHobby(google.protobuf.StringValue) returns (PersonList) {}
-  rpc GetPersonsWithHobbiesByHobby(google.protobuf.StringValue) returns (PersonList) {}
+  rpc GetPerson(PersonGetRequest) returns (PersonObject) {}
+  rpc GetPersonWithHobby(PersonGetRequest) returns (PersonObject) {}
+  rpc GetAllPersons(google.protobuf.BoolValue) returns (PersonList) {}
+  rpc GetAllPersonsWithHobbies(google.protobuf.BoolValue) returns (PersonList) {}
+  rpc GetPersonsByHobby(PersonByHobbyRequest) returns (PersonList) {}
+  rpc GetPersonsWithHobbiesByHobby(PersonByHobbyRequest) returns (PersonList) {}
   rpc CreatePerson(PersonObject) returns (PersonObject) {}
   rpc UpdatePerson(PersonObject) returns (google.protobuf.Empty) {}
   rpc DeletePerson(DeletePersonRequest) returns (google.protobuf.Empty) {}
+  rpc RestorePerson(RestorePersonRequest) returns (google.protobuf.Empty) {}
 }
 
 message PersonObject {
@@ -40,4 +41,19 @@ message PersonList {
 message DeletePersonRequest {
   string id = 1;
   string author = 2;
+}
+
+message RestorePersonRequest {
+  string id = 1;
+  string author = 2;
+}
+
+message PersonGetRequest {
+  string id = 1;
+  bool includeDeleted = 2;
+}
+
+message PersonByHobbyRequest {
+  string hobbyName = 1;
+  bool includeDeleted = 2;
 }

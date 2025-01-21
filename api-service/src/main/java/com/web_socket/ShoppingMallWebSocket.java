@@ -34,11 +34,11 @@ public class ShoppingMallWebSocket {
     public Uni<WebSocketMessage> onMessage(WebSocketMessage message) {
         switch (message.type()) {
             case GET -> {
-                return shoppingMallService.getShoppingMallById(message.getMessageAs(Integer.class))
+                return shoppingMallService.getShoppingMallById(message.getMessageAs(Integer.class), true)
                     .map(mall -> new WebSocketMessage(Type.GET, mall));
             }
             case GET_LIST -> {
-                return shoppingMallService.getAllShoppingMalls()
+                return shoppingMallService.getAllShoppingMalls(true)
                     .map(mallList -> new WebSocketMessage(Type.GET_LIST, mallList));
             }
             case CREATE -> {

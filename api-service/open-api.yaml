@@ -19,6 +19,10 @@ paths:
       description: Retrieve the information of the person with the matching person ID.
       operationId: get-person
       parameters:
+        - name: includeDeleted
+          in: query
+          schema:
+            type: boolean
         - name: id
           in: path
           description: persons id
@@ -85,6 +89,21 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
+    patch:
+      tags:
+        - person-controller
+      summary: Restore Person
+      operationId: restore-person
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses: {}
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
   /quarkus-demo-api/persons:
     post:
       tags:
@@ -121,6 +140,11 @@ paths:
       summary: Get list of Persons
       description: Get list of Persons
       operationId: get-all-persons
+      parameters:
+        - name: includeDeleted
+          in: query
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK
@@ -141,6 +165,10 @@ paths:
       description: Get list of Persons by selected Hobby
       operationId: get-all-persons-by-hobby
       parameters:
+        - name: includeDeleted
+          in: query
+          schema:
+            type: boolean
         - name: hobby
           in: path
           description: Persons selected hobby
@@ -166,6 +194,11 @@ paths:
       summary: Get all Hobbies
       description: Get all Hobbies
       operationId: get-all-hobbies
+      parameters:
+        - name: includeDeleted
+          in: query
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK
@@ -207,6 +240,10 @@ paths:
       description: Get Hobby by Id
       operationId: get-hobby
       parameters:
+        - name: includeDeleted
+          in: query
+          schema:
+            type: boolean
         - name: id
           in: path
           required: true
@@ -263,12 +300,32 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
+    patch:
+      tags:
+        - hobby-controller
+      summary: Restore Hobby
+      operationId: restore-hobby
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses: {}
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
   /quarkus-demo-api/shopping-malls/:
     get:
       tags:
         - shopping-mall-controller
       summary: Get ShoppingMalls
       operationId: get-all-shopping-malls
+      parameters:
+        - name: includeDeleted
+          in: query
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK
@@ -308,6 +365,10 @@ paths:
       summary: Get ShoppingMall by Id
       operationId: get-shopping-mall
       parameters:
+        - name: includeDeleted
+          in: query
+          schema:
+            type: boolean
         - name: id
           in: path
           required: true
@@ -362,6 +423,21 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
+    patch:
+      tags:
+        - shopping-mall-controller
+      summary: Restore ShoppingMall
+      operationId: restore-shopping-mall
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses: {}
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
   /quarkus-demo-api/shopping-mall/notifications/send-alert:
     post:
       tags:
@@ -385,6 +461,11 @@ paths:
         - shopping-mall-controller
       summary: Download ShoppingMall list as .xlsx
       operationId: download-shopping-malls-list-xlsx
+      parameters:
+        - name: includeDeleted
+          in: query
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK
@@ -402,6 +483,11 @@ paths:
         - shopping-mall-controller
       summary: Download ShoppingMall list as .docx
       operationId: download-shopping-malls-list-docx
+      parameters:
+        - name: includeDeleted
+          in: query
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK
@@ -454,6 +540,21 @@ paths:
       servers:
         - url: 'http://localhost:8080'
           description: Person-api
+    patch:
+      tags:
+        - shopping-mall-hobby-controller
+      summary: Restore ShoppingMallHobby
+      operationId: restore-shopping-mall-hobby
+      parameters:
+        - name: shoppingMallHobbyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses: {}
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
   '/quarkus-demo-api/persons/{id}/hobbies':
     post:
       tags:
@@ -481,6 +582,21 @@ paths:
         - person-hobby-controller
       summary: Remove PersonHobby
       operationId: delete-person-hobby
+      parameters:
+        - name: personHobbyId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses: {}
+      servers:
+        - url: 'http://localhost:8080'
+          description: Person-api
+    patch:
+      tags:
+        - person-hobby-controller
+      summary: Restore PersonHobby
+      operationId: restore-person-hobby
       parameters:
         - name: personHobbyId
           in: path
